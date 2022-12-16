@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'accounts.apps.AccountsConfig',
+    'giftCards.apps.GiftcardsConfig',
+    'wallets.apps.WalletsConfig',
 ]
 
 MIDDLEWARE = [
