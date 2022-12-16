@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     'accounts.apps.AccountsConfig',
     'giftCards.apps.GiftcardsConfig',
+    'transactions.apps.TransactionsConfig',
     'wallets.apps.WalletsConfig',
 ]
 
