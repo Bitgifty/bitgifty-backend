@@ -4,7 +4,7 @@ from django.db import models
 
 
 class Wallet(models.Model):
-    owner = models.ForeignKey('accounts.Account')
+    owner = models.ForeignKey('accounts.Account', on_delete=models.CASCADE)
     balance = models.FloatField(default=0.0)
 
     def __str__(self):

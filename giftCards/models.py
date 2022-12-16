@@ -4,6 +4,7 @@ from django.db import models
 
 
 class GiftCard(models.Model):
+    wallet = models.ForeignKey('wallets.Wallet', on_delete=models.CASCADE)
     currency = models.CharField(max_length=255)
     amount = models.FloatField(default=0.0)
     quantity = models.IntegerField(default=0)
