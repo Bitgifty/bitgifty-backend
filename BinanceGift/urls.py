@@ -23,4 +23,6 @@ urlpatterns = [
     path('auth/registration/', include('dj_rest_auth.registration.urls')),
 
     path('gift_cards/', include('giftCards.urls')),
+
+    path('transactions/', include('transactions.urls')),
 ]
