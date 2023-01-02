@@ -11,6 +11,7 @@ from rest_framework.serializers import ValidationError
 
 from .serializers import TransactionSerializer, TransactionConfirmSerializer
 from .models import Transaction
+from BinanceGift.settings import TATUM_API_KEY
 # Create your views here.
 
 
@@ -44,7 +45,7 @@ class TransactionConfirmView(APIView):
             url = f"https://api.tatum.io/v3/{transaction_chain}/transaction/" + transaction_hash
             
             # make request to tatum api
-            headers = {"x-api-key": "YOUR_API_KEY_HERE"}
+            headers = {"x-api-key": TATUM_API_KEY}
             response = requests.get(url, headers=headers)
 
             data = response.json()

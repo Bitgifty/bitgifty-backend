@@ -6,6 +6,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from cryptography.fernet import Fernet
+
+from BinanceGift.settings import TATUM_API_KEY
 # Create your models here.
 
 
@@ -35,7 +37,7 @@ def encrypt_data(address: str, mnemonic: str, xpub: str):
 def update_account(sender, instance, **kwargs):
     if instance.wallet_address and not instance.wallet_seed:
         url = "https://api.tatum.io/v3/ethereum/wallet"
-        headers = {"x-api-key": "YOUR_API_KEY_HERE"}
+        headers = {"x-api-key": TATUM_API_KEY}
         response = requests.get(url, headers=headers)
         data = response.json()
         mnemonic = data.mnemonic
