@@ -7,6 +7,7 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.serializers import ValidationError
 
 from .serializers import TransactionSerializer, TransactionConfirmSerializer
 from .models import Transaction
@@ -36,6 +37,7 @@ class TransactionConfirmView(APIView):
 
 
         if serializer.is_valid(self):
+            current_user = request.user
             transaction_hash = serializer.validated_data.get("transaction_hash")
             transaction_chain = serializer.validated_data.get("transaction_chain")
             
@@ -47,6 +49,17 @@ class TransactionConfirmView(APIView):
 
             data = response.json()
             print(data)
+            if current_user.wallet_address != data.to:
+                transaction.status = "cancelled"
+                transaction.save()
+                raise ValidationError("Sent to wrong address")
+            elif data.value != transaction.amount:
+                transaction.status = "cancelled"
+                transaction.save()
+                raise ValidationError("Wrong amount sent")
+            else:
+                transaction.status = "confirmed"
+                transaction.save()
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
