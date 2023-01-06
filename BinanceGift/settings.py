@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import environ
+import os
 
 # Initialise environment variables
 env = environ.Env()
@@ -55,6 +56,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'dj_rest_auth.registration',
+    'drf_yasg',
 ]
 
 SITE_ID = 1
@@ -108,9 +110,17 @@ WSGI_APPLICATION = 'BinanceGift.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'aoxcamsp',
+        'USER': 'aoxcamsp',
+        'PASSWORD': '3IZJGbntcqWyrbUpfvyKmvR8Dus_b21Q',
+        'HOST': 'dumbo.db.elephantsql.com',
+        'PORT': '5432',
     }
 }
 
@@ -173,6 +183,14 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 25
 
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Gift Carded',
+    'DESCRIPTION': 'Generate Blockchain based giftcards',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
 }
 
 REST_AUTH_SERIALIZERS = {

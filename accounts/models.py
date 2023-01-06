@@ -24,7 +24,7 @@ class Account(AbstractUser):
         return self.email
 
 def encrypt_data(address: str, mnemonic: str, xpub: str):
-    key = f"{address}787898"
+    key = f"{address}{TATUM_API_KEY}"
 
     fernet = Fernet(key)
 
@@ -33,7 +33,7 @@ def encrypt_data(address: str, mnemonic: str, xpub: str):
 
     return encMnemonic, encXpub
 
-@receiver(post_save, Account)
+@receiver(post_save, sender=Account)
 def update_account(sender, instance, **kwargs):
     if instance.wallet_address and not instance.wallet_seed:
         url = "https://api.tatum.io/v3/ethereum/wallet"

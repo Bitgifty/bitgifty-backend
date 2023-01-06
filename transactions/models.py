@@ -9,7 +9,7 @@ class Transaction(models.Model):
     asset = models.CharField(max_length=255, default="USDT")
     action = models.CharField(max_length=255)
     status = models.CharField(max_length=255, default='pending')
-    time = models.DateTimeField(auto_now_add=True)
+    time = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     def __str__(self):
         return self.wallet.email
