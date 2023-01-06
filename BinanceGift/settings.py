@@ -34,7 +34,7 @@ DEBUG = True
 
 DEBUG_PROPAGATE_EXCEPTIONS = True
 
-ALLOWED_HOSTS = ['giftcarded.onrender.com']
+ALLOWED_HOSTS = ['giftcarded.onrender.com', '127.0.0.1']
 
 
 # Application definition
