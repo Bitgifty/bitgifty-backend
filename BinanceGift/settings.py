@@ -26,7 +26,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = 'djangowasthebestchoiceinbuildingthisplatform&thereisnothingyoucansay@me.'
+# env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -213,7 +214,8 @@ REST_AUTH_SERIALIZERS = {
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackends'
 
-TATUM_API_KEY = env('TATUM_API_KEY')
+TATUM_API_KEY = "911b1900-ade5-47a0-9d3a-a4112188bcd7"
+# TATUM_API_KEY = env('TATUM_API_KEY')
 
 LOGGING = {
     'version': 1,
