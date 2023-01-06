@@ -3,8 +3,9 @@ FROM python:3.8.12-alpine3.15
 ADD ./requirements.txt /app/requirements.txt
 
 
-RUN apk upgrade -U \
-    && rm -rf /var/cache/*
+RUN apk update && apk upgrade
+
+RUN apk add --no-cache --virtual .build-deps postgresql-dev build-base gcc && rm -rf /var/cache/apk/*
 
 ADD . /app
 WORKDIR /app
