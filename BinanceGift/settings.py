@@ -31,7 +31,9 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['giftcarded.onrender.com']
+DEBUG_PROPAGATE_EXCEPTIONS = True
+
+ALLOWED_HOSTS = ['giftcarded.onrender.com', '0.0.0.0']
 
 
 # Application definition
@@ -57,6 +59,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'dj_rest_auth.registration',
     'drf_yasg',
+    'corsheaders',
 ]
 
 SITE_ID = 1
@@ -124,6 +127,12 @@ DATABASES = {
     }
 }
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3030",
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://127.0.0.1:5500",
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -162,6 +171,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'static')
+# ]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static') # new
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -200,3 +214,36 @@ REST_AUTH_SERIALIZERS = {
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackends'
 
 TATUM_API_KEY = env('TATUM_API_KEY')
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': ('%(asctime)s [%(process)d] [%(levelname)s] ' +
+                       'pathname=%(pathname)s lineno=%(lineno)s ' +
+                       'funcname=%(funcName)s %(message)s'),
+            'datefmt': '%Y-%m-%d %H:%M:%S'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        }
+    },
+    'handlers': {
+        'null': {
+            'level': 'DEBUG',
+            'class': 'logging.NullHandler',
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        }
+    },
+    'loggers': {
+        'testlogger': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        }
+    }
+}
