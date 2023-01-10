@@ -217,7 +217,12 @@ REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'accounts.serializers.CustomUserDetailSerializer',
 }
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackends'
+REST_AUTH_REGISTER_SERIALIZERS = {
+    "REGISTER_SERIALIZER": "accounts.serializers.CustomRegistrationSerializer",
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 
 TATUM_API_KEY = "911b1900-ade5-47a0-9d3a-a4112188bcd7"
 # TATUM_API_KEY = env('TATUM_API_KEY')
