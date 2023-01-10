@@ -52,7 +52,9 @@ INSTALLED_APPS = [
     'giftCards.apps.GiftcardsConfig',
     'transactions.apps.TransactionsConfig',
     'wallets.apps.WalletsConfig',
-    
+
+    'corsheaders',
+
     'rest_framework',
     'rest_framework.authtoken',
     'allauth',
@@ -60,12 +62,12 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'dj_rest_auth.registration',
     'drf_yasg',
-    'corsheaders',
 ]
 
 SITE_ID = 1
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
