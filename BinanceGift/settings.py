@@ -11,12 +11,9 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-import environ
 import os
+from django.core.management.utils import get_random_secret_key
 
-# Initialise environment variables
-env = environ.Env()
-environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,8 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'djangowasthebestchoiceinbuildingthisplatform&thereisnothingyoucansay@me.'
-# env('SECRET_KEY')
+SECRET_KEY = get_random_secret_key()
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -223,9 +219,7 @@ REST_AUTH_REGISTER_SERIALIZERS = {
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-
-TATUM_API_KEY = "911b1900-ade5-47a0-9d3a-a4112188bcd7"
-# TATUM_API_KEY = env('TATUM_API_KEY')
+TATUM_API_KEY = os.getenv('TATUM_API_KEY')
 
 LOGGING = {
     'version': 1,

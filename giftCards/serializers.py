@@ -5,4 +5,5 @@ from .models import GiftCard
 class GiftCardSerializer(serializers.ModelSerializer):
     class Meta:
         model = GiftCard
-        fields = "__all__"
+        exclude = ["binance_code", ]
+        read_only_fields = ["binance_code", "encrypted_code"]
