@@ -47,6 +47,26 @@ class Blockchain(object):
         data = response.json()
         return data
     
+    def get_wallet_info(self, address:str, network: str) -> dict:
+        url = f"https://api.tatum.io/v3/{network}/account/" + address
+
+        headers = {"x-api-key": self.key}
+
+        response = requests.get(url, headers=headers)
+
+        data = response.json()
+        return data
+
+    def get_transactions(self, address:str, network:str) -> dict:
+        url = "https://api.tatum.io/v3/tron/transaction/account/" + address
+
+        headers = {"x-api-key": self.key}
+
+        response = requests.get(url, headers=headers)
+
+        data = response.json()
+        return data
+
     def create_gift_card(self, token: str, amount: str) -> dict:
         client = self.init_binance()
         response = client.gift_card_create_code(token, amount)
