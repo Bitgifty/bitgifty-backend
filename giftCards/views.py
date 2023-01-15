@@ -13,9 +13,7 @@ class GiftCardAPIView(ListCreateAPIView):
 
     def perform_create(self, serializer, **kwargs):
         current_user = self.request.user
-        wallet = GiftCard.objects.get(
-            wallet__owner=current_user)
-        kwargs['wallet'] = wallet
+        kwargs['account'] = current_user
         serializer.save(**kwargs)
 
 

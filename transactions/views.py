@@ -1,4 +1,4 @@
-import requests
+import os
 
 from django.shortcuts import render
 from django.http import Http404
@@ -27,7 +27,7 @@ class TransactionListAPIView(generics.GenericAPIView):
         user = request.user
         wallet_address = user.wallet_address
 
-        client = Blockchain()
+        client = Blockchain(os.getenv("TATUM_API_KEY"), os.getenv("BIN_KEY"), os.getenv("BIN_SECRET"))
         transactions = client.get_transactions(wallet_address, "tron")
 
         try:

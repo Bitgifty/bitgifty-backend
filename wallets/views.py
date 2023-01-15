@@ -1,3 +1,5 @@
+import os
+
 from django.shortcuts import render
 
 from rest_framework import generics
@@ -20,7 +22,7 @@ class WalletAPIView(generics.GenericAPIView):
         user = request.user
         wallet_address = user.wallet_address
 
-        client = Blockchain()
+        client = Blockchain(os.getenv("TATUM_API_KEY"), os.getenv("BIN_KEY"), os.getenv("BIN_SECRET"))
         wallet_info = client.get_wallet_info(wallet_address, "tron")
 
         try:

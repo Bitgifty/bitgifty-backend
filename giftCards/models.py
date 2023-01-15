@@ -1,13 +1,14 @@
 import os
 
 from django.db import models
+from django.core.exceptions import ValidationError
 
 from core.utils import Blockchain
 # Create your models here.
 
 
 class GiftCard(models.Model):
-    wallet = models.ForeignKey('wallets.Wallet', on_delete=models.CASCADE)
+    account = models.ForeignKey('accounts.Account', on_delete=models.CASCADE, null=True)
     currency = models.CharField(max_length=255)
     amount = models.FloatField(default=0.0)
     quantity = models.IntegerField(default=0)
@@ -22,9 +23,12 @@ class GiftCard(models.Model):
 
     def save(self, *args, **kwargs):
         TATUM_API_KEY = os.getenv("TATUM_API_KEY")
-        client = Blockchain(key=TATUM_API_KEY)
-        giftcard = client.create_gift_card(self.currency, str(self.amount))
-        self.binance_code = giftcard["code"]
+        client = Blockchain(TATUM_API_KEY, os.getenv("BIN_KEY"), os.getenv("BIN_SECRET"))
+        try:
+            giftcard = client.create_gift_card(self.currency, str(self.amount))
+            self.binance_code = giftcard["code"]
+        except Exception as exception:
+            raise ValidationError(exception)
         return super(self, GiftCard).save(*args, **kwargs)
 
 
@@ -33,7 +37,11 @@ class Redeem(models.Model):
 
     def save(self, *args, **kwargs):
         TATUM_API_KEY = os.getenv("TATUM_API_KEY")
-        client = Blockchain(key=TATUM_API_KEY)
-        giftcard = client.reedem_gift_card(self.code)
-        self.binance_code = giftcard["code"]
-        return super(self, GiftCard).save(*args, **kwargs)
+        client = Blockchain(TATUM_API_KEY, os.getenv("BIN_KEY"), os.getenv("BIN_SECRET"))
+        
+        try:
+            giftcard = client.reedem_gift_card(self.code)
+            self.binance_code = giftcard["code"]
+        except Exception as exception:
+            raise ValidationError(exception)
+        return super(self, Redeem).save(*args, **kwargs)
