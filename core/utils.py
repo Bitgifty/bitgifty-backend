@@ -18,17 +18,21 @@ class Blockchain(object):
         client = Spot(self.bin_key, self.bin_secret)
         return client
 
-    def encrypt_credentials(self, address: str, mnemonic: str, xpub: str) -> dict:
+    def encrypt_credentials(self, mnemonic: str, xpub: str) -> dict:
         """
         Encrypt wallet mnemonics and xpubs 
         """
-        key = Fernet.generate_key()
-        fernet = Fernet(key)
+        fernet = Fernet(os.getenv("ENC_KEY"))
         output = {}
         output["Mnemonic"] = fernet.encrypt(mnemonic.encode())
         output["Xpub"] = fernet.encrypt(xpub.encode())
         return output
 
+    def decrypt_crendentails(self, token: str) -> dict:
+        fernet = fernet = Fernet(os.getenv("ENC_KEY"))
+        output = fernet.decrypt(token)
+        return output
+    
     def generate_credentials(self, network: str) -> dict:
         url = f"https://api.tatum.io/v3/{network}/wallet"
         headers = {"x-api-key": self.key}

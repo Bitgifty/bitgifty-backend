@@ -33,8 +33,7 @@ def update_account(sender, instance, **kwargs):
         wallet = client.generate_wallet(credentials["xpub"], "tron")
 
         encrypted_credentials = client.encrypt_credentials(
-            wallet["address"], credentials["mnemonic"],
-            credentials["xpub"]
+           credentials["mnemonic"], credentials["xpub"]
         )
        
         instance.xpub, instance.wallet_seed = encrypted_credentials["Xpub"], encrypted_credentials["Mnemonic"]
