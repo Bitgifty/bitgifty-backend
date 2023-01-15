@@ -6,8 +6,7 @@ from django.http import Http404
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.serializers import ValidationError
-from rest_framework.schemas import SchemaGenerator
+
 
 from .serializers import TransactionSerializer
 from .models import Transaction
@@ -23,7 +22,7 @@ class TransactionListAPIView(generics.GenericAPIView):
     queryset = Transaction.objects.all()
     renderer_classes = [OpenAPIRenderer, SwaggerUIRenderer ]
 
-    def get(self, request, pk):
+    def get(self, request):
         """Confirms if a payment is legit"""
         user = request.user
         wallet_address = user.wallet_address
