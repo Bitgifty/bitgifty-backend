@@ -19,13 +19,12 @@ class WalletAPIView(generics.GenericAPIView):
 
     def get(self, request):
         """Confirms if a payment is legit"""
-        user = request.user
-        wallet_address = user.wallet_address
-
-        client = Blockchain(os.getenv("TATUM_API_KEY"), os.getenv("BIN_KEY"), os.getenv("BIN_SECRET"))
-        wallet_info = client.get_wallet_info(wallet_address, "tron")
-
         try:
+            user = request.user
+            wallet_address = user.wallet_address
+
+            client = Blockchain(os.getenv("TATUM_API_KEY"), os.getenv("BIN_KEY"), os.getenv("BIN_SECRET"))
+            wallet_info = client.get_wallet_info(wallet_address, "tron")
             return Response(wallet_info, status=status.HTTP_200_OK)
         except Exception as exception:
             return Response({"error": exception}, status=status.HTTP_400_BAD_REQUEST)
