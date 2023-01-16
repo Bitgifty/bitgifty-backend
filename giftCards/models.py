@@ -1,7 +1,7 @@
 import os
 
 from django.db import models
-from django.core.exceptions import ValidationError
+from django.core.exceptions import BadRequest
 
 from core.utils import Blockchain
 # Create your models here.
@@ -28,7 +28,7 @@ class GiftCard(models.Model):
             giftcard = client.create_gift_card(self.currency, str(self.amount))
             self.binance_code = giftcard["code"]
         except Exception as exception:
-            raise ValidationError(exception)
+            raise BadRequest(exception)
         return super(self, GiftCard).save(*args, **kwargs)
 
 
@@ -43,5 +43,5 @@ class Redeem(models.Model):
             giftcard = client.reedem_gift_card(self.code)
             self.binance_code = giftcard["code"]
         except Exception as exception:
-            raise ValidationError(exception)
+            raise BadRequest(exception)
         return super(self, Redeem).save(*args, **kwargs)
