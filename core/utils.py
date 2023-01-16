@@ -71,6 +71,9 @@ class Blockchain(object):
         data = response.json()
         return data
 
+    def send_token(self, sender_address:str, receiver_address:str) -> dict:
+        return
+
     def create_gift_card(self, token: str, amount: str) -> dict:
         client = self.init_binance()
         response = client.gift_card_create_code(token, amount)
