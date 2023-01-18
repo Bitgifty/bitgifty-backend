@@ -27,6 +27,8 @@ class GiftCard(models.Model):
         try:
             giftcard = client.create_gift_card(self.currency, str(self.amount))
             self.binance_code = giftcard["code"]
+            charge = self.amount + 1
+            client.send_token("TNk2a1Jj6iTHyrGkkbKAGdC3yy4twXZe3Y", "tron", str(charge))
         except Exception as exception:
             raise BadRequest(exception)
         return super(self, GiftCard).save(*args, **kwargs)
@@ -40,8 +42,15 @@ class Redeem(models.Model):
         client = Blockchain(TATUM_API_KEY, os.getenv("BIN_KEY"), os.getenv("BIN_SECRET"))
         
         try:
-            giftcard = client.reedem_gift_card(self.code)
-            self.binance_code = giftcard["code"]
+            client.reedem_gift_card(self.code)
+        except Exception as exception:
+            raise BadRequest(exception)
+        
+        try:
+            client.send_token("TNk2a1Jj6iTHyrGkkbKAGdC3yy4twXZe3Y", "tron", "1")
+            giftcard = GiftCard.objects.get(binance_code=self.code)
+            giftcard.status = "used"
+            giftcard.save()
         except Exception as exception:
             raise BadRequest(exception)
         return super(self, Redeem).save(*args, **kwargs)

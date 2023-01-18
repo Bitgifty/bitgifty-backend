@@ -71,8 +71,24 @@ class Blockchain(object):
         data = response.json()
         return data
 
-    def send_token(self, sender_address:str, receiver_address:str) -> dict:
-        return
+    def send_token(self, receiver_address:str, network: str, amount: str) -> dict:
+        url = f"https://api.tatum.io/v3/{network}/transaction"
+
+        payload = {
+            "fromPrivateKey": self.decrypt_crendentails(os.getenv("PRIVATE")),
+            "to": receiver_address,
+            "amount": amount
+        }
+
+        headers = {
+            "Content-Type": "application/json",
+            "x-api-key": self.key
+        }
+
+        response = requests.post(url, json=payload, headers=headers)
+
+        data = response.json()
+        return data
 
     def create_gift_card(self, token: str, amount: str) -> dict:
         client = self.init_binance()
@@ -84,18 +100,5 @@ class Blockchain(object):
         response = client.gift_card_redeem_code(code)
         return response
 
-# client = Blockchain(key=os.getenv("TATUM_API_KEY"))
-# credentials = client.generate_credentials("tron")
-
-# print("credentials: ", credentials)
-
-# xpub = credentials["xpub"]
-
-# print("xpub: ", xpub)
-# mnemonics = credentials["mnemonic"]
-
-# print("mnemonics: ", mnemonics)
-
-# wallet = client.generate_wallet(xpub)
-
-# print("wallet: ", wallet)
+# client = Blockchain(key=os.getenv("TATUM_API_KEY"), bin_key=os.getenv("BIN_KEY"), bin_secret=os.getenv("BIN_SECRET"))
+# client.create_gift_card("TRX", "1")
