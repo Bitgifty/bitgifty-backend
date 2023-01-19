@@ -28,7 +28,7 @@ class Blockchain(object):
         output["Xpub"] = fernet.encrypt(xpub.encode())
         return output
 
-    def decrypt_crendentails(self, token: str) -> dict:
+    def decrypt_crendentails(self, token: str) -> str:
         fernet = fernet = Fernet(os.getenv("ENC_KEY"))
         output = fernet.decrypt(token)
         return output
@@ -71,11 +71,11 @@ class Blockchain(object):
         data = response.json()
         return data
 
-    def send_token(self, receiver_address:str, network: str, amount: str) -> dict:
+    def send_token(self, receiver_address:str, network: str, amount: str, mnemonic: str) -> dict:
         url = f"https://api.tatum.io/v3/{network}/transaction"
 
         payload = {
-            "fromPrivateKey": self.decrypt_crendentails(os.getenv("PRIVATE")),
+            "fromPrivateKey": self.decrypt_crendentails(mnemonic),
             "to": receiver_address,
             "amount": amount
         }

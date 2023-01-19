@@ -12,3 +12,8 @@ class TransactionSerializer(serializers.ModelSerializer):
 class TransactionConfirmSerializer(serializers.Serializer):
     transaction_hash = serializers.CharField()
     transaction_chain = serializers.CharField()
+
+
+class WithdrawalSerializer(serializers.Serializer):
+    amount = serializers.CharField()
+    receiver_address = serializers.CharField()

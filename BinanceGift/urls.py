@@ -44,7 +44,7 @@ urlpatterns = [
 
     path('gift_cards/', include('giftCards.urls')),
 
-    path('transactions/', include('transactions.urls')),
+    path('', include('transactions.urls')),
 
     path('wallets/', include('wallets.urls')),
 
