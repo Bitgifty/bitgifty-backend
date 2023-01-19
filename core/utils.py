@@ -18,19 +18,27 @@ class Blockchain(object):
         client = Spot(self.bin_key, self.bin_secret)
         return client
 
-    def encrypt_credentials(self, mnemonic: str, xpub: str) -> dict:
+    def encrypt_credentials(self, mnemonic: str, xpub: str, private_key: str) -> dict:
         """
         Encrypt wallet mnemonics and xpubs 
         """
-        fernet = Fernet(os.getenv("ENC_KEY"))
+        key = os.getenv("ENC_KEY")
+        fernet = Fernet(key)
         output = {}
         output["Mnemonic"] = fernet.encrypt(mnemonic.encode())
         output["Xpub"] = fernet.encrypt(xpub.encode())
+        output["private_key"] = fernet.encrypt(private_key.encode())
         return output
 
     def decrypt_crendentails(self, token: str) -> str:
-        fernet = fernet = Fernet(os.getenv("ENC_KEY"))
-        output = fernet.decrypt(token)
+        try:
+            key = os.getenv("ENC_KEY")
+            fernet = fernet = Fernet(key)
+            print("output")
+            output = fernet.decrypt(token)
+            print(output)
+        except Exception as exception:
+            raise ValueError(exception)
         return output
     
     def generate_credentials(self, network: str) -> dict:
@@ -71,11 +79,29 @@ class Blockchain(object):
         data = response.json()
         return data
 
-    def send_token(self, receiver_address:str, network: str, amount: str, mnemonic: str) -> dict:
+    def generate_private_key(self, mnemonic: str, network:str) -> str:
+        url = f"https://api.tatum.io/v3/{network}/wallet/priv"
+
+        payload = {
+            "index": 0,
+            "mnemonic": mnemonic
+        }
+
+        headers = {
+            "Content-Type": "application/json",
+            "x-api-key": self.key
+        }
+
+        response = requests.post(url, json=payload, headers=headers)
+
+        data = response.json()
+        return data["key"]
+
+    def send_token(self, receiver_address:str, network: str, amount: str, private_key: str) -> dict:
         url = f"https://api.tatum.io/v3/{network}/transaction"
 
         payload = {
-            "fromPrivateKey": self.decrypt_crendentails(mnemonic),
+            "fromPrivateKey": self.decrypt_crendentails(private_key),
             "to": receiver_address,
             "amount": amount
         }

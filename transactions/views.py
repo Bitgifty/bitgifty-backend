@@ -43,14 +43,14 @@ class WithdrawAPIView(generics.GenericAPIView):
     def post(self, request):
         serializer = serializers.WithdrawalSerializer(data=request.data)
         try:
-            if serializer.is_valid(self):
+            if serializer.is_valid():
                 user = request.user
                 receiver_address = serializer.validated_data.get("receiver_address")
-                amount = serializer.validated_data.get("receiver_address")
+                amount = serializer.validated_data.get("receiver_address")                
                 client = Blockchain(os.getenv("TATUM_API_KEY"), os.getenv("BIN_KEY"), os.getenv("BIN_SECRET"))
                 if user.wallet_seed:
-                    encrypted_mnemonic = user.wallet_seed
-                    mnemonic = client.decrypt_crendentails(encrypted_mnemonic)
+                    private_key = user.private_key
+                    mnemonic = client.decrypt_crendentails(private_key)
                     client.send_token(receiver_address, "tron", amount, mnemonic)
                 else:
                     ValidationError({"error": "wallet seed not inputted"})

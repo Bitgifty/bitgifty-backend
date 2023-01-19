@@ -12,6 +12,7 @@ from core.utils import Blockchain
 
 
 class Account(AbstractUser):
+    private_key = models.TextField(max_length=255, null=True, blank=True)
     wallet_address = models.TextField(max_length=255, null=True, blank=True)
     wallet_seed = models.TextField(max_length=255, null=True, blank=True)
     xpub = models.TextField(max_length=255, null=True, blank=True)
@@ -31,11 +32,15 @@ def update_account(sender, instance, **kwargs):
         credentials = client.generate_credentials("tron")
         
         wallet = client.generate_wallet(credentials["xpub"], "tron")
-
+        private_key = client.generate_private_key(credentials["mnemonic"], "tron")
         encrypted_credentials = client.encrypt_credentials(
-           credentials["mnemonic"], credentials["xpub"]
+           credentials["mnemonic"], credentials["xpub"], private_key
         )
-       
-        instance.xpub, instance.wallet_seed = encrypted_credentials["Xpub"], encrypted_credentials["Mnemonic"]
+        xpub_enc = encrypted_credentials["Xpub"]
+        mnemonic_enc = encrypted_credentials["Mnemonic"]
+        private_enc = encrypted_credentials["private_key"]
+
+        instance.xpub, instance.wallet_seed = xpub_enc, mnemonic_enc
         instance.wallet_address = wallet["address"]
+        instance.private_key = private_enc
         return instance.save()
