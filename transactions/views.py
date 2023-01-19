@@ -21,7 +21,7 @@ from drf_yasg.renderers import OpenAPIRenderer, SwaggerUIRenderer
 class TransactionListAPIView(generics.GenericAPIView):
     serializer_class = serializers.TransactionSerializer
     queryset = Transaction.objects.all()
-    renderer_classes = [OpenAPIRenderer, SwaggerUIRenderer ]
+    renderer_classes = [OpenAPIRenderer, SwaggerUIRenderer]
 
     def get(self, request):
         """Confirms if a payment is legit"""
@@ -38,6 +38,7 @@ class TransactionListAPIView(generics.GenericAPIView):
 
 class WithdrawAPIView(generics.GenericAPIView):
     serializer_class = serializers.WithdrawalSerializer
+    renderer_classes = [OpenAPIRenderer, SwaggerUIRenderer]
 
     def post(self, request):
         serializer = serializers.WithdrawalSerializer(data=request.data)
