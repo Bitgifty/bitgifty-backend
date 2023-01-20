@@ -51,7 +51,7 @@ class WithdrawAPIView(generics.GenericAPIView):
                 if user.wallet_seed:
                     private_key = user.private_key
                     mnemonic = client.decrypt_crendentails(private_key)
-                    response = client.send_token(receiver_address, "tron", amount, mnemonic)
+                    response = client.send_token(receiver_address, "tron", str(amount), mnemonic)
                     if response["statusCode"] == 200:
                         return Response(response)
                     else:
