@@ -1,5 +1,6 @@
 import os
 
+
 from django.shortcuts import render
 from django.http import Http404
 
@@ -15,8 +16,10 @@ from .models import Transaction
 from core.utils import Blockchain
 from drf_yasg.renderers import OpenAPIRenderer, SwaggerUIRenderer
 
+from core.utils import env_init
 # Create your views here.
 
+env = env_init()
 
 class TransactionListAPIView(generics.GenericAPIView):
     serializer_class = serializers.TransactionSerializer
@@ -29,7 +32,7 @@ class TransactionListAPIView(generics.GenericAPIView):
             user = request.user
             wallet_address = user.wallet_address
 
-            client = Blockchain(os.getenv("TATUM_API_KEY"), os.getenv("BIN_KEY"), os.getenv("BIN_SECRET"))
+            client = Blockchain(env("TATUM_API_KEY"), env("BIN_KEY"), env("BIN_SECRET"))
             transactions = client.get_transactions(wallet_address, "tron")
             return Response(transactions, status=status.HTTP_200_OK)
         except Exception as exception:
@@ -47,12 +50,12 @@ class WithdrawAPIView(generics.GenericAPIView):
                 user = request.user
                 receiver_address = serializer.validated_data.get("receiver_address")
                 amount = serializer.validated_data.get("amount")                
-                client = Blockchain(os.getenv("TATUM_API_KEY"), os.getenv("BIN_KEY"), os.getenv("BIN_SECRET"))
+                client = Blockchain(env("TATUM_API_KEY"), env("BIN_KEY"), env("BIN_SECRET"))
                 if user.wallet_seed:
                     private_key = user.private_key
                     mnemonic = client.decrypt_crendentails(private_key)
                     response = client.send_token(receiver_address, "tron", str(amount), mnemonic)
-                    if response["statusCode"] == 200:
+                    if response["txId"]:
                         return Response(response)
                     else:
                         raise ValidationError(response)

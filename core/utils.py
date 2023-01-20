@@ -1,10 +1,19 @@
 import requests
+from pathlib import Path
+import environ
 
 from cryptography.fernet import Fernet
 from binance.spot import Spot
 
 import os
 
+def env_init():
+    env = environ.Env()
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+    return env
+
+env = env_init()
 class Blockchain(object):
     def __init__(self, key: str, bin_key: str = None, bin_secret: str=None) -> None:
         self.key = key
@@ -124,5 +133,5 @@ class Blockchain(object):
         response = client.gift_card_redeem_code(code)
         return response
 
-# client = Blockchain(key=os.getenv("TATUM_API_KEY"), bin_key=os.getenv("BIN_KEY"), bin_secret=os.getenv("BIN_SECRET"))
-# client.create_gift_card("TRX", "1")
+# client = Blockchain(key=env("TATUM_API_KEY"), bin_key=env("BIN_KEY"), bin_secret=env("BIN_SECRET"))
+# print(client.send_token("TXdiUinn2ir1bkbkhkG7TGUxGhHPkzvaqH", "tron", "10", "602aa822d94192838a38fb9b7578b2005573ec56d5c489d97c83d6037d3565ed"))

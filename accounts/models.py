@@ -1,17 +1,13 @@
-import environ
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from core.utils import Blockchain
+from core.utils import Blockchain, env_init
 # Create your models here.
 
-env = environ.Env()
-# reading .env file
-environ.Env.read_env()
-
+env = env_init()
 class Account(AbstractUser):
     private_key = models.CharField(max_length=555, null=True, blank=True)
     wallet_address = models.CharField(max_length=555, null=True, blank=True)
