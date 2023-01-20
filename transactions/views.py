@@ -46,7 +46,7 @@ class WithdrawAPIView(generics.GenericAPIView):
             if serializer.is_valid():
                 user = request.user
                 receiver_address = serializer.validated_data.get("receiver_address")
-                amount = serializer.validated_data.get("receiver_address")                
+                amount = serializer.validated_data.get("amount")                
                 client = Blockchain(os.getenv("TATUM_API_KEY"), os.getenv("BIN_KEY"), os.getenv("BIN_SECRET"))
                 if user.wallet_seed:
                     private_key = user.private_key
