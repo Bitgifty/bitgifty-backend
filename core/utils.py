@@ -81,7 +81,7 @@ class Blockchain(object):
         url = f"https://api.tatum.io/v3/{network}/wallet/priv"
 
         payload = {
-            "index": 0,
+            "index": 1,
             "mnemonic": mnemonic
         }
 
