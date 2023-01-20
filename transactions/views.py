@@ -51,9 +51,14 @@ class WithdrawAPIView(generics.GenericAPIView):
                 if user.wallet_seed:
                     private_key = user.private_key
                     mnemonic = client.decrypt_crendentails(private_key)
-                    client.send_token(receiver_address, "tron", amount, mnemonic)
+                    response = client.send_token(receiver_address, "tron", amount, mnemonic)
+                    if response["statusCode"] == 200:
+                        return Response(response)
+                    else:
+                        raise ValidationError(str(response["message"]))
+
                 else:
-                    ValidationError({"error": "wallet seed not inputted"})
+                    raise ValidationError({"error": "wallet seed not inputted"})
             else:
                 raise ValidationError({"error": "something went wrong"})
         except Exception as exception:

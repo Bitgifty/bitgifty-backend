@@ -34,12 +34,10 @@ class Blockchain(object):
         try:
             key = os.getenv("ENC_KEY")
             fernet = fernet = Fernet(key)
-            print("output")
             output = fernet.decrypt(token)
-            print(output)
         except Exception as exception:
             raise ValueError(exception)
-        return output
+        return output.decode()
     
     def generate_credentials(self, network: str) -> dict:
         url = f"https://api.tatum.io/v3/{network}/wallet"
@@ -101,7 +99,7 @@ class Blockchain(object):
         url = f"https://api.tatum.io/v3/{network}/transaction"
 
         payload = {
-            "fromPrivateKey": self.decrypt_crendentails(private_key),
+            "fromPrivateKey": private_key,
             "to": receiver_address,
             "amount": amount
         }

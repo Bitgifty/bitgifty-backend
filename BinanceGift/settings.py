@@ -12,8 +12,11 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
-from django.core.management.utils import get_random_secret_key
+import environ
 
+env = environ.Env()
+# reading .env file
+environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,10 +26,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = get_random_secret_key()
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env("DEBUG")
 
 DEBUG_PROPAGATE_EXCEPTIONS = True
 
@@ -111,20 +114,24 @@ WSGI_APPLICATION = 'BinanceGift.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'aoxcamsp',
-        'USER': 'aoxcamsp',
-        'PASSWORD': '3IZJGbntcqWyrbUpfvyKmvR8Dus_b21Q',
-        'HOST': 'dumbo.db.elephantsql.com',
-        'PORT': '5432',
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'aoxcamsp',
+            'USER': 'aoxcamsp',
+            'PASSWORD': '3IZJGbntcqWyrbUpfvyKmvR8Dus_b21Q',
+            'HOST': 'dumbo.db.elephantsql.com',
+            'PORT': '5432',
+        }
+    }
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3030",
@@ -170,9 +177,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, 'static')
-# ]
+
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # new
 
@@ -219,7 +224,6 @@ REST_AUTH_REGISTER_SERIALIZERS = {
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-TATUM_API_KEY = os.getenv('TATUM_API_KEY')
 
 LOGGING = {
     'version': 1,
