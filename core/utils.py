@@ -40,7 +40,7 @@ class Blockchain(object):
         return output.decode()
     
     def generate_credentials(self, network: str) -> dict:
-        url = f"https://api.tatum.io/v3/{network}/wallet"
+        url = f"https://api.tatum.io/v3/{network}/wallet?type=testnet"
         headers = {"x-api-key": self.key}
         response = requests.get(url, headers=headers)
         data = response.json()
@@ -48,7 +48,7 @@ class Blockchain(object):
 
     def generate_wallet(self, xpub: str, network: str) -> dict:
         index = 1
-        url = f"https://api.tatum.io/v3/{network}/address/{xpub}/{index}"
+        url = f"https://api.tatum.io/v3/{network}/address/{xpub}/{index}?type=testnet"
 
         headers = {"x-api-key": self.key}
 
@@ -58,7 +58,7 @@ class Blockchain(object):
         return data
     
     def get_wallet_info(self, address:str, network: str) -> dict:
-        url = f"https://api.tatum.io/v3/{network}/account/" + address
+        url = f"https://api.tatum.io/v3/{network}/account/{address}?type=testnet"
 
         headers = {"x-api-key": self.key}
 
@@ -68,7 +68,7 @@ class Blockchain(object):
         return data
 
     def get_transactions(self, address:str, network:str) -> dict:
-        url = "https://api.tatum.io/v3/tron/transaction/account/" + address
+        url = f"https://api.tatum.io/v3/{network}/transaction/account/{address}?type=testnet"
 
         headers = {"x-api-key": self.key}
 
@@ -96,7 +96,7 @@ class Blockchain(object):
         return data["key"]
 
     def send_token(self, receiver_address:str, network: str, amount: str, private_key: str) -> dict:
-        url = f"https://api.tatum.io/v3/{network}/transaction"
+        url = f"https://api.tatum.io/v3/{network}/transaction?type=testnet"
 
         payload = {
             "fromPrivateKey": private_key,
