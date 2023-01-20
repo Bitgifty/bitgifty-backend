@@ -55,7 +55,7 @@ class WithdrawAPIView(generics.GenericAPIView):
                     if response["statusCode"] == 200:
                         return Response(response)
                     else:
-                        raise ValidationError(str(response["message"]))
+                        raise ValidationError(response)
 
                 else:
                     raise ValidationError({"error": "wallet seed not inputted"})
