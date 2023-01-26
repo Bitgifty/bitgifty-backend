@@ -26,7 +26,7 @@ class WalletAPIView(generics.GenericAPIView):
         wallet_list = []
         try:
             network_mapping = {
-                "bnb": "bsc",
+                "bnb": "bnb",
                 "bitcoin": "bitcoin",
                 "celo": "celo",
                 "ethereum": "ethereum",

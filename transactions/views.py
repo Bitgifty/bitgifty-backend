@@ -31,11 +31,15 @@ class TransactionListAPIView(generics.GenericAPIView):
         """Confirms if a payment is legit"""
         try:
             user = request.user
-            wallet_address = user.wallet_address
+            wallet_list = Transaction.objects.filter(wallet=user)
+            output_list = []
 
-            client = Blockchain(env("TATUM_API_KEY"), env("BIN_KEY"), env("BIN_SECRET"))
-            transactions = client.get_transactions(wallet_address, "tron")
-            return Response(transactions, status=status.HTTP_200_OK)
+            for wallet in wallet_list:
+                network = wallet.network.lower()
+                client = Blockchain(env("TATUM_API_KEY"), env("BIN_KEY"), env("BIN_SECRET"))
+                transactions = client.get_transactions(wallet.address, network)
+                output_list.append(transactions)
+            return Response(output_list, status=status.HTTP_200_OK)
         except Exception as exception:
             return Response({"error": str(exception)}, status=status.HTTP_400_BAD_REQUEST)
 

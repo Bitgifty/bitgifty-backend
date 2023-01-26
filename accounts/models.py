@@ -33,7 +33,7 @@ def update_account(sender, instance, **kwargs):
             
             cloud_name = env("CLOUD_NAME")
             network_mapping = {
-                "bnb": "bsc",
+                "bnb": "bnb",
                 "bitcoin": "bitcoin",
                 "celo": "celo",
                 "ethereum": "ethereum",
@@ -41,16 +41,29 @@ def update_account(sender, instance, **kwargs):
             }
 
             for key in network_mapping:
-                credentials = client.generate_credentials(network_mapping[key])
-                wallet = client.generate_wallet(credentials["xpub"], network_mapping[key])
-                private_key = client.generate_private_key(credentials["mnemonic"], network_mapping[key])
-                encrypted_credentials = client.encrypt_credentials(
-                credentials["mnemonic"], credentials["xpub"], private_key
-                )
-                xpub_enc = encrypted_credentials["Xpub"]
-                mnemonic_enc = encrypted_credentials["Mnemonic"]
-                private_enc = encrypted_credentials["private_key"]
-                wallet_address = wallet["address"]
+                if key == "bnb":
+                    credentials = client.generate_bnb_wallet()
+                    wallet_address = credentials["address"]
+                    private_key = credentials["privateKey"]
+                    encrypted_credentials = client.encrypt_credentials(
+                        private_key=private_key
+                    )
+                    private_enc = encrypted_credentials["private_key"]
+                    xpub_enc = None
+                    mnemonic_enc = None
+                else:
+                    credentials = client.generate_credentials(network_mapping[key])
+                    wallet = client.generate_wallet(credentials["xpub"], network_mapping[key])
+                    private_key = client.generate_private_key(credentials["mnemonic"], network_mapping[key])
+                
+                    encrypted_credentials = client.encrypt_credentials(
+                    credentials["mnemonic"], credentials["xpub"], private_key
+                    )
+                    wallet_address = wallet["address"]
+                    
+                    xpub_enc = encrypted_credentials["Xpub"]
+                    mnemonic_enc = encrypted_credentials["Mnemonic"]
+                    private_enc = encrypted_credentials["private_key"]
                 client.upload_qrcode(wallet_address, instance.email)
 
                 user_wallet = Wallet(

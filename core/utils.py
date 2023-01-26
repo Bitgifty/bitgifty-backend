@@ -43,16 +43,20 @@ class Blockchain(object):
             secure = True
         )
 
-    def encrypt_credentials(self, mnemonic: str, xpub: str, private_key: str) -> dict:
+    def encrypt_credentials(self, mnemonic: str = None, xpub: str= None, private_key: str = None) -> dict:
         """
         Encrypt wallet mnemonics and xpubs 
         """
         key = os.getenv("ENC_KEY")
         fernet = Fernet(key)
         output = {}
-        output["Mnemonic"] = fernet.encrypt(mnemonic.encode())
-        output["Xpub"] = fernet.encrypt(xpub.encode())
-        output["private_key"] = fernet.encrypt(private_key.encode())
+        
+        if mnemonic:
+            output["Mnemonic"] = fernet.encrypt(mnemonic.encode())
+        if xpub:
+            output["Xpub"] = fernet.encrypt(xpub.encode())
+        if private_key:
+            output["private_key"] = fernet.encrypt(private_key.encode())
         return output
 
     def decrypt_crendentails(self, token: str) -> str:
@@ -68,6 +72,16 @@ class Blockchain(object):
         url = f"https://api.tatum.io/v3/{network}/wallet?type=testnet"
         headers = {"x-api-key": self.key}
         response = requests.get(url, headers=headers)
+        data = response.json()
+        return data
+
+    def generate_bnb_wallet(self) -> dict:
+        url = "https://api.tatum.io/v3/bnb/account"
+
+        headers = {"x-api-key": self.key}
+
+        response = requests.get(url, headers=headers)
+
         data = response.json()
         return data
 
@@ -90,6 +104,9 @@ class Blockchain(object):
             url = f"https://api.tatum.io/v3/{network}/account/{address}?type=testnet"
         elif network == "bitcoin":
             url = f"https://api.tatum.io/v3/{network}/address/balance/{address}?type=testnet"
+        elif network == "bnb":
+            url = f"https://api.tatum.io/v3/{network}/account/{address}?type=testnet"
+        
 
         headers = {"x-api-key": self.key}
 
@@ -99,11 +116,58 @@ class Blockchain(object):
         return data
 
     def get_transactions(self, address:str, network:str) -> dict:
-        url = f"https://api.tatum.io/v3/{network}/transaction/account/{address}?type=testnet"
+        tron = {
+            "url": "https://api.tatum.io/v3/tron/transaction?type=testnet"
+        }
+
+        bnb = {
+            "url": f"https://api.tatum.io/v3/bnb/account/transaction/{address}",
+            "query": {
+                "startTime": "1651831727871",
+                "endTime": "1651831727871"
+            }
+        }
+
+        bitcoin = {
+            "url": f"https://api.tatum.io/v3/bitcoin/transaction/address/{address}",
+            "query": {
+                "pageSize": "10"
+            }
+        }
+
+        celo = {
+            "url": f"https://api.tatum.io/v3/celo/account/transaction/{address}",
+            "query": {
+                "pageSize": "10"
+            }
+        }
+
+        ethereum = {
+            "url": f"https://api.tatum.io/v3/ethereum/account/transaction/{address}",
+            "query": {
+                "pageSize": "10"
+            }
+        }
+
+
+        selected_network = {
+            "bnb": bnb,
+            "bitcoin": bitcoin,
+            "celo": celo,
+            "ethereum": ethereum,
+            "tron": tron,
+        }
+
+        url = selected_network[network]["url"]
+        
+        try:
+            query = selected_network[network]["query"]
+        except Exception:
+            query=None
 
         headers = {"x-api-key": self.key}
 
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers, query=query)
 
         data = response.json()
         return data
@@ -136,11 +200,11 @@ class Blockchain(object):
             "url": "https://api.tatum.io/v3/tron/transaction?type=testnet"
         }
 
-        bsc = {
-            "url": "https://api.tatum.io/v3/bsc/transaction",
+        bnb = {
+            "url": "https://api.tatum.io/v3/bnb/transaction",
             "payload": {
                 "to": receiver_address,
-                "currency": "BSC",
+                "currency": "BNB",
                 "amount": amount,
                 "fromPrivateKey": private_key
             }
@@ -187,7 +251,7 @@ class Blockchain(object):
 
 
         selected_network = {
-            "bnb": bsc,
+            "bnb": bnb,
             "bitcoin": bitcoin,
             "celo": celo,
             "ethereum": ethereum,
@@ -201,26 +265,6 @@ class Blockchain(object):
 
         url = selected_network[network]["url"]
         payload = selected_network[network]["payload"]
-
-        response = requests.post(url, json=payload, headers=headers)
-
-        data = response.json()
-        return data
-
-    def send_bsc(self, receiver_address:str, network: str, amount: str, private_key: str) -> dict:
-        url = "https://api.tatum.io/v3/bsc/transaction"
-
-        payload = {
-        "to": "0x687422eEA2cB73B5d3e242bA5456b782919AFc85",
-        "currency": "BSC",
-        "amount": "100000",
-        "fromPrivateKey": "0x05e150c73f1920ec14caa1e0b6aa09940899678051a78542840c2668ce5080c2"
-        }
-
-        headers = {
-            "Content-Type": "application/json",
-            "x-api-key": self.key
-        }
 
         response = requests.post(url, json=payload, headers=headers)
 
