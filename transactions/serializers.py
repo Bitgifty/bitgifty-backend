@@ -17,3 +17,4 @@ class TransactionConfirmSerializer(serializers.Serializer):
 class WithdrawalSerializer(serializers.Serializer):
     amount = serializers.CharField()
     receiver_address = serializers.CharField()
+    network = serializers.CharField()

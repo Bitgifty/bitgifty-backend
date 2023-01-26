@@ -14,6 +14,7 @@ from . import serializers
 from .models import Transaction
 
 from core.utils import Blockchain
+from wallets.models import Wallet
 from drf_yasg.renderers import OpenAPIRenderer, SwaggerUIRenderer
 
 from core.utils import env_init
@@ -49,19 +50,17 @@ class WithdrawAPIView(generics.GenericAPIView):
             if serializer.is_valid():
                 user = request.user
                 receiver_address = serializer.validated_data.get("receiver_address")
-                amount = serializer.validated_data.get("amount")                
+                amount = serializer.validated_data.get("amount")
+                network = serializer.validated_data.get("network")
                 client = Blockchain(env("TATUM_API_KEY"), env("BIN_KEY"), env("BIN_SECRET"))
-                if user.wallet_seed:
-                    private_key = user.private_key
-                    mnemonic = client.decrypt_crendentails(private_key)
-                    response = client.send_token(receiver_address, "tron", str(amount), mnemonic)
-                    if response["txId"]:
-                        return Response(response)
-                    else:
-                        raise ValidationError(response)
-
+                wallet = Wallet.objects.get(owner=user, network=network)
+                private_key = wallet.private_key
+                mnemonic = client.decrypt_crendentails(private_key)
+                response = client.send_token(receiver_address, network, str(amount), mnemonic, wallet.address)
+                if response["txId"]:
+                    return Response(response)
                 else:
-                    raise ValidationError({"error": "wallet seed not inputted"})
+                    raise ValidationError(response)
             else:
                 raise ValidationError({"error": "something went wrong"})
         except Exception as exception:

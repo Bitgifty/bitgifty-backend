@@ -126,13 +126,95 @@ class Blockchain(object):
         data = response.json()
         return data["key"]
 
-    def send_token(self, receiver_address:str, network: str, amount: str, private_key: str) -> dict:
-        url = f"https://api.tatum.io/v3/{network}/transaction?type=testnet"
+    def send_token(self, receiver_address:str, network: str, amount: str, private_key: str, address: str = None) -> dict:
+        tron = {
+            "payload": {
+                "fromPrivateKey": private_key,
+                "to": receiver_address,
+                "amount": amount
+            },
+            "url": "https://api.tatum.io/v3/tron/transaction?type=testnet"
+        }
+
+        bsc = {
+            "url": "https://api.tatum.io/v3/bsc/transaction",
+            "payload": {
+                "to": receiver_address,
+                "currency": "BSC",
+                "amount": amount,
+                "fromPrivateKey": private_key
+            }
+        }
+
+        bitcoin = {
+            "url": "https://api.tatum.io/v3/bitcoin/transaction",
+            "payload": {
+                "fromAddress": [
+                    {
+                    "address": address,
+                    "privateKey": private_key
+                    }
+                ],
+                "to": [
+                    {
+                    "address": receiver_address,
+                    "value": float(amount)
+                    }
+                ]
+            }
+        }
+
+        celo = {
+            "url": "https://api.tatum.io/v3/celo/transaction",
+            "payload": {
+                "to": receiver_address,
+                "currency": "CELO",
+                "feeCurrency": "CELO",
+                "amount": amount,
+                "fromPrivateKey": private_key
+            }
+        }
+
+        ethereum = {
+            "url": "https://api.tatum.io/v3/ethereum/transaction",
+            "payload": {
+                "to": receiver_address,
+                "amount": amount,
+                "currency": "ETH",
+                "fromPrivateKey": private_key
+            }
+        }
+
+
+        selected_network = {
+            "bnb": bsc,
+            "bitcoin": bitcoin,
+            "celo": celo,
+            "ethereum": ethereum,
+            "tron": tron,
+        }
+
+        headers = {
+            "Content-Type": "application/json",
+            "x-api-key": self.key
+        }
+
+        url = selected_network[network]["url"]
+        payload = selected_network[network]["payload"]
+
+        response = requests.post(url, json=payload, headers=headers)
+
+        data = response.json()
+        return data
+
+    def send_bsc(self, receiver_address:str, network: str, amount: str, private_key: str) -> dict:
+        url = "https://api.tatum.io/v3/bsc/transaction"
 
         payload = {
-            "fromPrivateKey": private_key,
-            "to": receiver_address,
-            "amount": amount
+        "to": "0x687422eEA2cB73B5d3e242bA5456b782919AFc85",
+        "currency": "BSC",
+        "amount": "100000",
+        "fromPrivateKey": "0x05e150c73f1920ec14caa1e0b6aa09940899678051a78542840c2668ce5080c2"
         }
 
         headers = {
