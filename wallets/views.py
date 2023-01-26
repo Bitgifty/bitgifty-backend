@@ -5,6 +5,7 @@ from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.exceptions import ValidationError
 
 from .serializers import WalletSerializer
 from .models import Wallet
@@ -13,12 +14,16 @@ from core.utils import Blockchain
 # Create your views here.
 
 
-class WalletDetailAPIView(generics.GenericAPIView):
+class WalletAPIView(generics.GenericAPIView):
     serializer_class = WalletSerializer
-    queryset = Wallet.objects.all()
+    
+    def get_queryset(self):
+        current_user = self.request.user
+        wallet = Wallet.objects.filter(owner=current_user)
+        return wallet
 
-    def get(self, request, network):
-        """Confirms if a payment is legit"""
+    def get(self, request):
+        wallet_list = []
         try:
             network_mapping = {
                 "bnb": "bsc",
@@ -28,19 +33,18 @@ class WalletDetailAPIView(generics.GenericAPIView):
                 "tron": "tron"
             }
             user = request.user
-            wallet_address = user.wallet_address
-            network = network.lower()
-            client = Blockchain(os.getenv("TATUM_API_KEY"), os.getenv("BIN_KEY"), os.getenv("BIN_SECRET"))
-            wallet_info = client.get_wallet_info(wallet_address, network_mapping[network])
-            return Response(wallet_info, status=status.HTTP_200_OK)
+            wallets = Wallet.objects.filter(owner=user)
+
+            for wallet in wallets:
+                network_key = wallet.network.lower()
+                network = network_mapping[network_key]
+                client = Blockchain(os.getenv("TATUM_API_KEY"), os.getenv("BIN_KEY"), os.getenv("BIN_SECRET"))
+                wallet_info = client.get_wallet_info(wallet.address, network)
+                
+                wallet_list.append({
+                    'address': wallet.address,
+                    'info': wallet_info
+                })
+            return Response(wallet_list, status=status.HTTP_200_OK)
         except Exception as exception:
-            return Response({"error": exception}, status=status.HTTP_400_BAD_REQUEST)
-
-
-class WalletAPIView(generics.ListCreateAPIView):
-    serializer_class = WalletSerializer
-
-    def get_queryset(self):
-        current_user = self.request.user
-        wallet = Wallet.objects.filter(owner=current_user)
-        return wallet
+            raise ValidationError({"error": exception})

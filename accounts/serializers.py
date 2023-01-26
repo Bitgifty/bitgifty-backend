@@ -55,5 +55,5 @@ class CustomRegistrationSerializer(RegisterSerializer):
 class CustomUserDetailSerializer(UserDetailsSerializer):
     class Meta:
         model = User
-        fields = ('pk', 'first_name', 'last_name', 'email', 'phone_number', 'wallet_address')
+        fields = ('pk', 'first_name', 'last_name', 'email', 'phone_number',)
         read_only_fields = ('email', )

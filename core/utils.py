@@ -1,11 +1,19 @@
+import os
 import requests
-from pathlib import Path
+
+
 import environ
+import qrcode
+
+from pathlib import Path
 
 from cryptography.fernet import Fernet
 from binance.spot import Spot
 
-import os
+from cloudinary.uploader import upload
+from cloudinary.utils import cloudinary
+
+
 
 def env_init():
     env = environ.Env()
@@ -27,6 +35,14 @@ class Blockchain(object):
         client = Spot(self.bin_key, self.bin_secret)
         return client
 
+    def init_cloudinary(self) -> cloudinary.config:
+        return cloudinary.config(
+            cloud_name = env("CLOUD_NAME"),
+            api_key = env("API_KEY"),
+            api_secret = env("API_SECRET"),
+            secure = True
+        )
+
     def encrypt_credentials(self, mnemonic: str, xpub: str, private_key: str) -> dict:
         """
         Encrypt wallet mnemonics and xpubs 
@@ -41,7 +57,7 @@ class Blockchain(object):
 
     def decrypt_crendentails(self, token: str) -> str:
         try:
-            key = os.getenv("ENC_KEY")
+            key = env("ENC_KEY")
             fernet = fernet = Fernet(key)
             output = fernet.decrypt(token)
         except Exception as exception:
@@ -64,10 +80,16 @@ class Blockchain(object):
         response = requests.get(url, headers=headers)
 
         data = response.json()
+        print(data)
         return data
     
     def get_wallet_info(self, address:str, network: str) -> dict:
-        url = f"https://api.tatum.io/v3/{network}/account/{address}?type=testnet"
+        url = f"https://api.tatum.io/v3/{network}/account/balance/{address}?type=testnet"
+        
+        if network == "tron":
+            url = f"https://api.tatum.io/v3/{network}/account/{address}?type=testnet"
+        elif network == "bitcoin":
+            url = f"https://api.tatum.io/v3/{network}/address/balance/{address}?type=testnet"
 
         headers = {"x-api-key": self.key}
 
@@ -133,5 +155,21 @@ class Blockchain(object):
         response = client.gift_card_redeem_code(code)
         return response
 
+    def create_qrcode(self, address: str) -> dict:
+        qrcode_img = qrcode.make(address)
+        qrcode_img.save(f'{address}.png')
+        
+    def upload_qrcode(self, address, email):
+        self.init_cloudinary()
+        self.create_qrcode(address)
+        upload(f'{address}.png', use_filename=True, unique_filename=False, public_id=f'{address}', folder=f'qr_code/{email}')
+        
+        try:
+            os.remove(f'{address}.png')
+        except Exception as exception:
+            raise ValueError({"error": str(exception)})
+
 # client = Blockchain(key=env("TATUM_API_KEY"), bin_key=env("BIN_KEY"), bin_secret=env("BIN_SECRET"))
 # print(client.send_token("TXdiUinn2ir1bkbkhkG7TGUxGhHPkzvaqH", "tron", "10", "602aa822d94192838a38fb9b7578b2005573ec56d5c489d97c83d6037d3565ed"))
+
+# print(client.upload_qrcode('test'))
