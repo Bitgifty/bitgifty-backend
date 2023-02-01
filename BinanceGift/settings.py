@@ -30,7 +30,7 @@ DEBUG = env("DEBUG")
 
 DEBUG_PROPAGATE_EXCEPTIONS = True
 
-ALLOWED_HOSTS = ['giftcarded.onrender.com', '127.0.0.1']
+ALLOWED_HOSTS = ['giftcarded.onrender.com', '127.0.0.1', '191.101.2.95']
 
 
 # Application definition
