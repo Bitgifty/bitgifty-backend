@@ -122,10 +122,10 @@ WSGI_APPLICATION = 'BinanceGift.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'aoxcamsp',
-        'USER': 'aoxcamsp',
-        'PASSWORD': '3IZJGbntcqWyrbUpfvyKmvR8Dus_b21Q',
-        'HOST': 'dumbo.db.elephantsql.com',
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
