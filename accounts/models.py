@@ -65,16 +65,24 @@ def update_account(sender, instance, **kwargs):
                     mnemonic_enc = encrypted_credentials["Mnemonic"]
                     private_enc = encrypted_credentials["private_key"]
                 client.upload_qrcode(wallet_address, instance.email)
-
-                user_wallet = Wallet(
-                    owner=instance,
-                    address=wallet_address,
-                    private_key=private_enc.decode(),
-                    xpub=xpub_enc.decode(),
-                    mnemonic=mnemonic_enc.decode(),
-                    network=key.title(),
-                    qrcode=f'https://res.cloudinary.com/{cloud_name}/image/upload/qr_code/{instance.email}/{wallet_address}.png'
-                )
+                if xpub_enc and mnemonic_enc:
+                    user_wallet = Wallet(
+                        owner=instance,
+                        address=wallet_address,
+                        private_key=private_enc.decode(),
+                        xpub=xpub_enc.decode(),
+                        mnemonic=mnemonic_enc.decode(),
+                        network=key.title(),
+                        qrcode=f'https://res.cloudinary.com/{cloud_name}/image/upload/qr_code/{instance.email}/{wallet_address}.png'
+                    )
+                else:
+                    user_wallet = Wallet(
+                        owner=instance,
+                        address=wallet_address,
+                        private_key=private_enc.decode(),
+                        network=key.title(),
+                        qrcode=f'https://res.cloudinary.com/{cloud_name}/image/upload/qr_code/{instance.email}/{wallet_address}.png'
+                    )
                 user_wallet.save()
             
         except Exception as exception:
