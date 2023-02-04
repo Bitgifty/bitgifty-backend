@@ -43,7 +43,8 @@ class WalletAPIView(generics.GenericAPIView):
                 
                 wallet_list.append({
                     'address': wallet.address,
-                    'info': wallet_info
+                    'info': wallet_info,
+                    'network': wallet.network,
                 })
             return Response(wallet_list, status=status.HTTP_200_OK)
         except Exception as exception:
