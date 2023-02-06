@@ -65,7 +65,7 @@ class WithdrawAPIView(generics.GenericAPIView):
             private_key = wallet.private_key
             mnemonic = client.decrypt_crendentails(private_key)
             response = client.send_token(receiver_address, network.lower(), str(amount), mnemonic, wallet.address)
-            if response["txId"]:
+            if response.get("txId"):
                 return Response(response)
             else:
                 raise ValidationError(response)
