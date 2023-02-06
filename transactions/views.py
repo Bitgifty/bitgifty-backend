@@ -57,10 +57,14 @@ class WithdrawAPIView(generics.GenericAPIView):
                 amount = serializer.validated_data.get("amount")
                 network = serializer.validated_data.get("network")
                 client = Blockchain(env("TATUM_API_KEY"), env("BIN_KEY"), env("BIN_SECRET"))
-                wallet = Wallet.objects.get(owner=user, network=network)
+                
+                try:
+                    wallet = Wallet.objects.get(owner=user, network=network)
+                except Exception:
+                    raise ValidationError({"error": "Sender wallet not found"})
                 private_key = wallet.private_key
                 mnemonic = client.decrypt_crendentails(private_key)
-                response = client.send_token(receiver_address, network, str(amount), mnemonic, wallet.address)
+                response = client.send_token(receiver_address, network.lower(), str(amount), mnemonic, wallet.address)
                 if response["txId"]:
                     return Response(response)
                 else:
