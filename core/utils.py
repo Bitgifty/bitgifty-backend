@@ -117,33 +117,33 @@ class Blockchain(object):
 
     def get_transactions(self, address:str, network:str) -> dict:
         tron = {
-            "url": "https://api.tatum.io/v3/tron/transaction?type=testnet"
+            "url": f"https://api.tatum.io/v3/tron/transaction/account/{address}?type=testnet"
         }
 
         bnb = {
             "url": f"https://api.tatum.io/v3/bnb/account/transaction/{address}",
             "query": {
-                "startTime": "1651831727871",
-                "endTime": "1651831727871"
+                "startTime": "100",
+                "endTime": "1651831727871",
             }
         }
 
         bitcoin = {
-            "url": f"https://api.tatum.io/v3/bitcoin/transaction/address/{address}",
+            "url": f"https://api.tatum.io/v3/bitcoin/transaction/address/{address}?type=testnet",
             "query": {
                 "pageSize": "10"
             }
         }
 
         celo = {
-            "url": f"https://api.tatum.io/v3/celo/account/transaction/{address}",
+            "url": f"https://api.tatum.io/v3/celo/account/transaction/{address}?type=testnet",
             "query": {
                 "pageSize": "10"
             }
         }
 
         ethereum = {
-            "url": f"https://api.tatum.io/v3/ethereum/account/transaction/{address}",
+            "url": f"https://api.tatum.io/v3/ethereum/account/transaction/{address}?type=testnet",
             "query": {
                 "pageSize": "10"
             }
@@ -157,17 +157,19 @@ class Blockchain(object):
             "ethereum": ethereum,
             "tron": tron,
         }
+        check_network = selected_network[network]
+        url = check_network["url"]
 
-        url = selected_network[network]["url"]
-        
         try:
-            query = selected_network[network]["query"]
-        except Exception:
-            query=None
-
+            query = check_network["query"]
+            print(query)
+        except KeyError:
+            query = ""
+        
+        
         headers = {"x-api-key": self.key}
 
-        response = requests.get(url, headers=headers, query=query)
+        response = requests.get(url, headers=headers, params=query)
 
         data = response.json()
         return data

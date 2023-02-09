@@ -5,8 +5,8 @@ from django.shortcuts import render
 from django.http import Http404
 
 from rest_framework import generics
+from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.exceptions import ValidationError
 
 
@@ -25,23 +25,24 @@ env = env_init()
 class TransactionListAPIView(generics.GenericAPIView):
     serializer_class = serializers.TransactionSerializer
     queryset = Transaction.objects.all()
-    renderer_classes = [OpenAPIRenderer, SwaggerUIRenderer]
+    renderer_classes = [JSONRenderer, BrowsableAPIRenderer, OpenAPIRenderer, SwaggerUIRenderer]
 
     def get(self, request):
         """Confirms if a payment is legit"""
         try:
             user = request.user
-            wallet_list = Transaction.objects.filter(wallet=user)
+            wallet_list = Wallet.objects.filter(owner=user)
             output_list = []
+            client = Blockchain(env("TATUM_API_KEY"), env("BIN_KEY"), env("BIN_SECRET"))
 
             for wallet in wallet_list:
                 network = wallet.network.lower()
-                client = Blockchain(env("TATUM_API_KEY"), env("BIN_KEY"), env("BIN_SECRET"))
+                
                 transactions = client.get_transactions(wallet.address, network)
                 output_list.append(transactions)
-            return Response(output_list, status=status.HTTP_200_OK)
+            return Response(output_list)
         except Exception as exception:
-            return Response({"error": str(exception)}, status=status.HTTP_400_BAD_REQUEST)
+            raise ValidationError({"error": str(exception)})
 
 
 class WithdrawAPIView(generics.GenericAPIView):
