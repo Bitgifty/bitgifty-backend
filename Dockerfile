@@ -11,6 +11,4 @@ RUN python /app/manage.py collectstatic --no-input
 
 EXPOSE 8000
 
-CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "BinanceGift.wsgi:application"]
-
 # Render wan kill me

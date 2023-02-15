@@ -1,0 +1,11 @@
+version: '3.7'
+
+services:
+  web:
+    build: .
+    command: gunicorn --bind :8000 --workers 3 BinanceGift.wsgi:application
+    # command:  python /app/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - 80:8000
