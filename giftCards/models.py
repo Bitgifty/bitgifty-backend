@@ -31,7 +31,7 @@ class GiftCard(models.Model):
             giftcard = client.create_gift_card(self.currency, str(self.amount))
             self.binance_code = giftcard["code"]
             charge = self.amount + 1
-            client.send_token("TNk2a1Jj6iTHyrGkkbKAGdC3yy4twXZe3Y", "tron", str(charge), env("PRIVATE_KEY"))
+            client.send_token("TNk2a1Jj6iTHyrGkkbKAGdC3yy4twXZe3Y", self.currency, str(charge), env("PRIVATE_KEY"))
         except Exception as exception:
             raise BadRequest(exception)
         return super(self, GiftCard).save(*args, **kwargs)
