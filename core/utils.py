@@ -202,6 +202,17 @@ class Blockchain(object):
             "url": "https://api.tatum.io/v3/tron/transaction?type=testnet"
         }
 
+        tron_usdt = {
+            "payload": {
+                "fromPrivateKey": private_key,
+                "to": receiver_address,
+                "tokenAddress": "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
+                "feeLimit": 0.01,
+                "amount": amount
+            },
+            "url": "https://api.tatum.io/v3/tron/trc20/transaction"
+        }
+
         bnb = {
             "url": "https://api.tatum.io/v3/bnb/transaction",
             "payload": {
@@ -258,6 +269,7 @@ class Blockchain(object):
             "celo": celo,
             "ethereum": ethereum,
             "tron": tron,
+            "tron_usdt": tron_usdt
         }
 
         headers = {
