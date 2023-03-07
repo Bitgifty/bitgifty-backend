@@ -7,7 +7,7 @@ WORKDIR /app
 
 RUN pip install -r /app/requirements.txt
 
-# RUN python /app/manage.py collectstatic --no-input
+RUN python /app/manage.py collectstatic --no-input
 
 EXPOSE 8000
 
