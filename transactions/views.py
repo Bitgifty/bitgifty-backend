@@ -27,20 +27,17 @@ class TransactionListAPIView(generics.GenericAPIView):
     queryset = Transaction.objects.all()
     renderer_classes = [JSONRenderer, BrowsableAPIRenderer, OpenAPIRenderer, SwaggerUIRenderer]
 
-    def get(self, request):
+    def get(self, request, network):
         """Confirms if a payment is legit"""
         try:
             user = request.user
-            wallet_list = Wallet.objects.filter(owner=user)
-            output_list = []
+            wallet = Wallet.objects.get(owner=user)
             client = Blockchain(env("TATUM_API_KEY"), env("BIN_KEY"), env("BIN_SECRET"))
 
-            for wallet in wallet_list:
-                network = wallet.network.lower()
-                
-                transactions = client.get_transactions(wallet.address, network)
-                output_list.append(transactions)
-            return Response(output_list)
+            network = wallet.network.lower()
+            transactions = client.get_transactions(wallet.address, network)
+
+            return Response(transactions)
         except Exception as exception:
             raise ValidationError({"error": str(exception)})
 
