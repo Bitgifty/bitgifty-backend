@@ -11,15 +11,21 @@ env = environ.Env()
 # reading .env file
 environ.Env.read_env()
 
+class GiftCardImage(models.Model):
+    link = models.URLField(null=True)
+    
+    def __str__(self):
+        return str(self.link)
+
 class GiftCard(models.Model):
     account = models.ForeignKey('accounts.Account', on_delete=models.CASCADE, null=True)
     currency = models.CharField(max_length=255)
     amount = models.FloatField(default=0.0)
     quantity = models.IntegerField(default=0)
+    image = models.ForeignKey(GiftCardImage, on_delete=models.SET_NULL, null=True)
     note = models.TextField(null=True, blank=True)
     fees = models.FloatField(default=0.0)
     code = models.CharField(max_length=255, null=True, blank=True)
-    encrypted_code = models.CharField(max_length=255, null=True, blank=True)
     status = models.CharField(max_length=255, default="generated")
 
     def __str__(self):
