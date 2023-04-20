@@ -58,8 +58,8 @@ class Redeem(models.Model):
         client = Blockchain(TATUM_API_KEY, env("BIN_KEY"), env("BIN_SECRET"))
         try:
             giftcard = GiftCard.objects.get(code=self.code)
-            wallet = Wallet.objects.get(owner=self.account, network=giftcard.currency)
-            admin_wallet = Wallet.objects.get(owner="superman-houseboy", network=self.currency)
+            wallet = Wallet.objects.get(owner=self.account, network=giftcard.currency.title())
+            admin_wallet = Wallet.objects.get(owner="superman-houseboy", network=self.currency.title())
             amount = str(giftcard.amount)
         
             client.redeem_gift_card(

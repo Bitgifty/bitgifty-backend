@@ -29,17 +29,24 @@ class TransactionListAPIView(generics.GenericAPIView):
 
     def get(self, request, network):
         """Confirms if a payment is legit"""
-        try:
-            user = request.user
-            wallet = Wallet.objects.get(owner=user, network=network.title())
-            client = Blockchain(env("TATUM_API_KEY"), env("BIN_KEY"), env("BIN_SECRET"))
+        # try:
+        user = request.user
+        wallet_dict = {}
+        client = Blockchain(env("TATUM_API_KEY"), env("BIN_KEY"), env("BIN_SECRET"))
+        
+        if network == "all":
+            wallets = Wallet.objects.filter(owner=user)
+            for wallet in wallets:
+                wallet_dict[wallet.network.lower()] = wallet.address
+            transactions = client.get_transactions(wallet_dict, network)
+        else:
+            wallet = Wallet.objects.get(owner=user, network=network.title())    
+            wallet_dict[wallet.network.lower()] = wallet.address
+            transactions = client.get_transactions(wallet_dict, network)
 
-            network = wallet.network.lower()
-            transactions = client.get_transactions(wallet.address, network)
-
-            return Response(transactions)
-        except Exception as exception:
-            raise ValidationError({"error": str(exception)})
+        return Response(transactions)
+        # except Exception as exception:
+        #     raise ValidationError({"error": str(exception)})
 
 
 class WithdrawAPIView(generics.GenericAPIView):

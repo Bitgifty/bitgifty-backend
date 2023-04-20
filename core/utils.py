@@ -116,13 +116,15 @@ class Blockchain(object):
         data = response.json()
         return data
 
-    def get_transactions(self, address:str, network:str) -> dict:
+    def get_transactions(self, address: dict, network:str) -> dict:
+        combined_output = {}
+
         tron = {
-            "url": f"https://api.tatum.io/v3/tron/transaction/account/{address}?type=testnet"
+            "url": f"https://api.tatum.io/v3/tron/transaction/account/{address.get('tron')}?type=testnet"
         }
 
         bnb = {
-            "url": f"https://api.tatum.io/v3/bnb/account/transaction/{address}",
+            "url": f"https://api.tatum.io/v3/bnb/account/transaction/{address.get('bnb')}",
             "query": {
                 "startTime": "100",
                 "endTime": "1651831727871",
@@ -130,21 +132,21 @@ class Blockchain(object):
         }
 
         bitcoin = {
-            "url": f"https://api.tatum.io/v3/bitcoin/transaction/address/{address}?type=testnet",
+            "url": f"https://api.tatum.io/v3/bitcoin/transaction/address/{address.get('bitcoin')}?type=testnet",
             "query": {
                 "pageSize": "10"
             }
         }
 
         celo = {
-            "url": f"https://api.tatum.io/v3/celo/account/transaction/{address}?type=testnet",
+            "url": f"https://api.tatum.io/v3/celo/account/transaction/{address.get('celo')}?type=testnet",
             "query": {
                 "pageSize": "10"
             }
         }
 
         ethereum = {
-            "url": f"https://api.tatum.io/v3/ethereum/account/transaction/{address}?type=testnet",
+            "url": f"https://api.tatum.io/v3/ethereum/account/transaction/{address.get('ethereum')}?type=testnet",
             "query": {
                 "pageSize": "10"
             }
@@ -158,21 +160,27 @@ class Blockchain(object):
             "ethereum": ethereum,
             "tron": tron,
         }
-        check_network = selected_network[network]
-        url = check_network["url"]
+        
 
         try:
+            check_network = selected_network[network]
+            url = check_network["url"]
             query = check_network["query"]
-            print(query)
         except KeyError:
-            query = ""
+            check_network = "all"
         
         
         headers = {"x-api-key": self.key}
 
-        response = requests.get(url, headers=headers, params=query)
-
-        data = response.json()
+        if check_network == "all":
+            for network in selected_network:
+                response = requests.get(selected_network[network]["url"], headers=headers, params=selected_network[network].get("query"))
+                output = response.json()
+                combined_output[network] = output
+            data = combined_output
+        else:
+            response = requests.get(url, headers=headers, params=query)
+            data = response.json()
         return data
 
     def generate_private_key(self, mnemonic: str, network:str) -> str:
