@@ -35,18 +35,18 @@ class GiftCard(models.Model):
         TATUM_API_KEY = env("TATUM_API_KEY")
         client = Blockchain(TATUM_API_KEY, env("BIN_KEY"), env("BIN_SECRET"))
         try:
-            wallet = Wallet.objects.get(owner=self.account, network=self.currency)
-            admin_wallet = Wallet.objects.get(owner="superman-houseboy", network=self.currency)
-            charge = self.amount + 1
+            wallet = Wallet.objects.get(owner=self.account, network=self.currency.title())
+            admin_wallet = Wallet.objects.get(owner__username="superman-houseboy", network=self.currency.title())
+            charge = self.amount
             giftcard = client.create_gift_card(
                 wallet.private_key, str(charge),
                 admin_wallet.address,
                 self.currency, wallet.address
             )
-            self.code = giftcard["code"]
+            self.code = giftcard
         except Exception as exception:
             raise BadRequest(exception)
-        return super(self, GiftCard).save(*args, **kwargs)
+        return super(GiftCard, self).save(*args, **kwargs)
 
 
 class Redeem(models.Model):
@@ -72,4 +72,4 @@ class Redeem(models.Model):
             giftcard.save()
         except Exception as exception:
             raise BadRequest(exception)
-        return super(self, Redeem).save(*args, **kwargs)
+        return super(Redeem, self).save(*args, **kwargs)

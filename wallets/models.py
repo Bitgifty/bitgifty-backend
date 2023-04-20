@@ -22,7 +22,7 @@ class Wallet(models.Model):
     qrcode = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
-        return self.owner.email
+        return self.owner.email +": "+ self.network
 
     class Meta:
         unique_together = ('owner', 'network')
