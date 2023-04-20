@@ -1,8 +1,15 @@
 from rest_framework import serializers
 
-from .models import GiftCard, Redeem
+from .models import GiftCard, Redeem, GiftCardImage
+
+
+class GiftCardImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GiftCardImage
+        fields = "__all__"
 
 class GiftCardSerializer(serializers.ModelSerializer):
+    image = GiftCardImageSerializer()
     class Meta:
         model = GiftCard
         fields = "__all__"
