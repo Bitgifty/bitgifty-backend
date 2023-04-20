@@ -31,7 +31,7 @@ class TransactionListAPIView(generics.GenericAPIView):
         """Confirms if a payment is legit"""
         try:
             user = request.user
-            wallet = Wallet.objects.get(owner=user)
+            wallet = Wallet.objects.get(owner=user, network=network.title())
             client = Blockchain(env("TATUM_API_KEY"), env("BIN_KEY"), env("BIN_SECRET"))
 
             network = wallet.network.lower()
