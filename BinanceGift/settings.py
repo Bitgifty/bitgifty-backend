@@ -36,7 +36,14 @@ LOGLEVEL = os.getenv('DJANGO_LOGLEVEL', 'info').upper()
 
 DEBUG_PROPAGATE_EXCEPTIONS = True
 
-ALLOWED_HOSTS = ['giftcarded.onrender.com', 'localhost', '191.101.2.95', '0.0.0.0', 'server.bitgifty.com']
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'giftcarded.onrender.com',
+    'localhost',
+    '191.101.2.95',
+    '0.0.0.0',
+    'server.bitgifty.com'
+]
 
 
 # Application definition
@@ -141,6 +148,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:3001",
     "http://127.0.0.1:5500",
+    "http://bitgifty.netlify.app",
+    "https://bitgifty.netlify.app"
 ]
 
 # Password validation

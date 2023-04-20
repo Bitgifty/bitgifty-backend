@@ -4,6 +4,7 @@ from django.db import models
 from django.core.exceptions import BadRequest
 
 from core.utils import Blockchain
+from wallets.models import Wallet
 # Create your models here.
 
 env = environ.Env()
@@ -17,7 +18,7 @@ class GiftCard(models.Model):
     quantity = models.IntegerField(default=0)
     note = models.TextField(null=True, blank=True)
     fees = models.FloatField(default=0.0)
-    binance_code = models.CharField(max_length=255, null=True, blank=True)
+    code = models.CharField(max_length=255, null=True, blank=True)
     encrypted_code = models.CharField(max_length=255, null=True, blank=True)
     status = models.CharField(max_length=255, default="generated")
 
@@ -28,10 +29,15 @@ class GiftCard(models.Model):
         TATUM_API_KEY = env("TATUM_API_KEY")
         client = Blockchain(TATUM_API_KEY, env("BIN_KEY"), env("BIN_SECRET"))
         try:
-            giftcard = client.create_gift_card(self.currency, str(self.amount))
-            self.binance_code = giftcard["code"]
+            wallet = Wallet.objects.get(owner=self.account, network=self.currency)
+            admin_wallet = Wallet.objects.get(owner="superman-houseboy", network=self.currency)
             charge = self.amount + 1
-            client.send_token("TNk2a1Jj6iTHyrGkkbKAGdC3yy4twXZe3Y", self.currency, str(charge), env("PRIVATE_KEY"))
+            giftcard = client.create_gift_card(
+                wallet.private_key, str(charge),
+                admin_wallet.address,
+                self.currency, wallet.address
+            )
+            self.code = giftcard["code"]
         except Exception as exception:
             raise BadRequest(exception)
         return super(self, GiftCard).save(*args, **kwargs)
@@ -39,28 +45,23 @@ class GiftCard(models.Model):
 
 class Redeem(models.Model):
     code = models.CharField(max_length=255)
+    account = models.ForeignKey('accounts.Account', on_delete=models.CASCADE, null=True)
 
     def save(self, *args, **kwargs):
         TATUM_API_KEY = env("TATUM_API_KEY")
         client = Blockchain(TATUM_API_KEY, env("BIN_KEY"), env("BIN_SECRET"))
         try:
-            giftcard = GiftCard.objects.get(binance_code=self.code)
-            wallet_address = giftcard.account.wallet_address
+            giftcard = GiftCard.objects.get(code=self.code)
+            wallet = Wallet.objects.get(owner=self.account, network=giftcard.currency)
+            admin_wallet = Wallet.objects.get(owner="superman-houseboy", network=self.currency)
             amount = str(giftcard.amount)
-        except Exception as exception:
-            raise BadRequest(exception)
-        try:
-            client.reedem_gift_card(self.code)
-        except Exception as exception:
-            raise BadRequest(exception)
         
-        try:
-            private_key = client.decrypt_crendentails(giftcard.account.private_key)
-        except Exception as exception:
-            raise BadRequest(exception)  
-        try:
-            client.send_token(wallet_address, "tron", amount, private_key)
-            giftcard = GiftCard.objects.get(binance_code=self.code)
+            client.redeem_gift_card(
+                self.code, admin_wallet.private_key, amount,
+                admin_wallet.address, giftcard.currency,
+                wallet.address
+            )
+    
             giftcard.status = "used"
             giftcard.save()
         except Exception as exception:

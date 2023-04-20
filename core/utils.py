@@ -1,5 +1,6 @@
 import os
 import requests
+import random
 
 
 import environ
@@ -285,15 +286,19 @@ class Blockchain(object):
         data = response.json()
         return data
 
-    def create_gift_card(self, token: str, amount: str) -> dict:
-        client = self.init_binance()
-        response = client.gift_card_create_code(token, amount)
-        return response
+    def generate_code(self):
+        code = random.randint(000000, 999999)
+        return code
 
-    def reedem_gift_card(self, code: str) -> dict:
-        client = self.init_binance()
-        response = client.gift_card_redeem_code(code)
-        return response
+    def create_gift_card(self, private_key: str, amount: str, receiver_address: str, network: str, sender_address: str) -> dict:
+        private_key = self.decrypt_crendentails(private_key)
+        self.send_token(receiver_address, network, amount, private_key, sender_address)
+        code = self.generate_code()
+        return code
+
+    def redeem_gift_card(self, code, private_key: str, amount: str, receiver_address: str, network: str, sender_address: str) -> dict:
+        self.send_token(receiver_address, network, amount, private_key, sender_address)       
+        return code
 
     def create_qrcode(self, address: str) -> dict:
         qrcode_img = qrcode.make(address)
