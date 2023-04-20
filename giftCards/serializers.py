@@ -9,7 +9,6 @@ class GiftCardImageSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class GiftCardSerializer(serializers.ModelSerializer):
-    image = GiftCardImageSerializer()
     class Meta:
         model = GiftCard
         fields = "__all__"

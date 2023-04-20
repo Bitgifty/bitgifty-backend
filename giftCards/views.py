@@ -2,8 +2,8 @@ from django.shortcuts import render
 
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
-from .serializers import GiftCardSerializer, RedeemSerializer
-from .models import GiftCard, Redeem
+from .serializers import GiftCardSerializer, RedeemSerializer, GiftCardImageSerializer
+from .models import GiftCard, Redeem, GiftCardImage
 # Create your views here.
 
 
@@ -20,6 +20,16 @@ class GiftCardAPIView(ListCreateAPIView):
 class GiftCardDetailView(RetrieveUpdateDestroyAPIView):
     serializer_class = GiftCardSerializer
     queryset = GiftCard.objects.all()
+
+
+class GiftCardImageAPIView(ListCreateAPIView):
+    serializer_class = GiftCardImageSerializer
+    queryset = GiftCardImage.objects.all()
+
+
+class GiftCardImageDetailView(RetrieveUpdateDestroyAPIView):
+    serializer_class = GiftCardImageSerializer
+    queryset = GiftCardImage.objects.all()
 
 
 class RedeemAPIView(ListCreateAPIView):
