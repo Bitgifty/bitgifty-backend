@@ -36,7 +36,7 @@ class GiftCard(models.Model):
         client = Blockchain(TATUM_API_KEY, env("BIN_KEY"), env("BIN_SECRET"))
         try:
             wallet = Wallet.objects.get(owner=self.account, network=self.currency.title())
-            admin_wallet = Wallet.objects.get(owner__username="superman-houseboy", network=self.currency.title())
+            admin_wallet = Wallet.objects.filter(owner__username="superman-houseboy", network=self.currency.title()).first()
             charge = self.amount
             giftcard = client.create_gift_card(
                 wallet.private_key, str(charge),
@@ -58,8 +58,10 @@ class Redeem(models.Model):
         client = Blockchain(TATUM_API_KEY, env("BIN_KEY"), env("BIN_SECRET"))
         try:
             giftcard = GiftCard.objects.get(code=self.code)
+            if giftcard.status == "used":
+                raise BadRequest("Gift card has been used")
             wallet = Wallet.objects.get(owner=self.account, network=giftcard.currency.title())
-            admin_wallet = Wallet.objects.get(owner="superman-houseboy", network=self.currency.title())
+            admin_wallet = Wallet.objects.get(owner__username="superman-houseboy", network=giftcard.currency.title())
             amount = str(giftcard.amount)
         
             client.redeem_gift_card(
