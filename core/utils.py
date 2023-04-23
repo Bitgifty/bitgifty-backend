@@ -201,7 +201,7 @@ class Blockchain(object):
         data = response.json()
         return data["key"]
 
-    def send_token(self, receiver_address:str, network: str, amount: str, private_key: str, address: str = None) -> dict:
+    def send_token(self, receiver_address:str, network: str, amount: str, private_key: str, address: str) -> dict:
         tron = {
             "payload": {
                 "fromPrivateKey": private_key,
@@ -256,7 +256,7 @@ class Blockchain(object):
                 "to": receiver_address,
                 "currency": "CELO",
                 "feeCurrency": "CELO",
-                "amount": amount,
+                "amount": str(amount),
                 "fromPrivateKey": private_key
             }
         }
@@ -292,6 +292,7 @@ class Blockchain(object):
         response = requests.post(url, json=payload, headers=headers)
 
         data = response.json()
+        print(data)
         return data
 
     def generate_code(self):
@@ -300,11 +301,12 @@ class Blockchain(object):
 
     def create_gift_card(self, private_key: str, amount: str, receiver_address: str, network: str, sender_address: str) -> dict:
         private_key = self.decrypt_crendentails(private_key)
-        self.send_token(receiver_address, network, amount, private_key, sender_address)
+        self.send_token(receiver_address, network, amount, private_key)
         code = self.generate_code()
         return code
 
     def redeem_gift_card(self, code, private_key: str, amount: str, receiver_address: str, network: str, sender_address: str) -> dict:
+        private_key = self.decrypt_crendentails(private_key)
         self.send_token(receiver_address, network, amount, private_key, sender_address)       
         return code
 

@@ -66,8 +66,7 @@ class Redeem(models.Model):
         
             client.redeem_gift_card(
                 self.code, admin_wallet.private_key, amount,
-                wallet.address, giftcard.currency,
-                admin_wallet.address
+                wallet.address, giftcard.currency, admin_wallet.address
             )
     
             giftcard.status = "used"
