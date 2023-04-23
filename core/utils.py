@@ -206,7 +206,7 @@ class Blockchain(object):
             "payload": {
                 "fromPrivateKey": private_key,
                 "to": receiver_address,
-                "amount": amount
+                "amount": str(amount)
             },
             "url": "https://api.tatum.io/v3/tron/transaction?type=testnet"
         }
@@ -217,7 +217,7 @@ class Blockchain(object):
                 "to": receiver_address,
                 "tokenAddress": "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
                 "feeLimit": 0.01,
-                "amount": amount
+                "amount": str(amount)
             },
             "url": "https://api.tatum.io/v3/tron/trc20/transaction"
         }
@@ -227,7 +227,7 @@ class Blockchain(object):
             "payload": {
                 "to": receiver_address,
                 "currency": "BNB",
-                "amount": amount,
+                "amount": str(amount),
                 "fromPrivateKey": private_key
             }
         }
@@ -265,7 +265,7 @@ class Blockchain(object):
             "url": "https://api.tatum.io/v3/ethereum/transaction",
             "payload": {
                 "to": receiver_address,
-                "amount": amount,
+                "amount": str(amount),
                 "currency": "ETH",
                 "fromPrivateKey": private_key
             }

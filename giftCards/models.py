@@ -39,7 +39,7 @@ class GiftCard(models.Model):
             admin_wallet = Wallet.objects.filter(owner__username="superman-houseboy", network=self.currency.title()).first()
             charge = self.amount
             giftcard = client.create_gift_card(
-                wallet.private_key, str(charge),
+                wallet.private_key, charge,
                 admin_wallet.address,
                 self.currency, wallet.address
             )
