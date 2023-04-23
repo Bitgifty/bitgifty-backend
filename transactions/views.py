@@ -40,7 +40,7 @@ class TransactionListAPIView(generics.GenericAPIView):
                 wallet_dict[wallet.network.lower()] = wallet.address
             transactions = client.get_transactions(wallet_dict, network)
         else:
-            wallet = Wallet.objects.get(owner=user, network=network.title())    
+            wallet = Wallet.objects.get(owner=user, network=network.title()) 
             wallet_dict[wallet.network.lower()] = wallet.address
             transactions = client.get_transactions(wallet_dict, network)
 

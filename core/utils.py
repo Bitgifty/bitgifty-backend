@@ -165,8 +165,8 @@ class Blockchain(object):
         try:
             check_network = selected_network[network]
             url = check_network["url"]
-            query = check_network["query"]
-        except KeyError:
+            query = check_network.get("query")
+        except Exception:
             check_network = "all"
         
         
