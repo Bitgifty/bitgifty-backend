@@ -301,7 +301,7 @@ class Blockchain(object):
 
     def create_gift_card(self, private_key: str, amount: str, receiver_address: str, network: str, sender_address: str) -> dict:
         private_key = self.decrypt_crendentails(private_key)
-        self.send_token(receiver_address, network, amount, private_key)
+        self.send_token(receiver_address, network, amount, private_key, sender_address)
         code = self.generate_code()
         return code
 
