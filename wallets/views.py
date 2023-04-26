@@ -23,7 +23,7 @@ class WalletAPIView(generics.GenericAPIView):
         return wallet
 
     def get(self, request):
-        wallet_list = []
+        wallet_list = {}
         try:
             network_mapping = {
                 "bnb": "bnb",
@@ -41,11 +41,10 @@ class WalletAPIView(generics.GenericAPIView):
                 client = Blockchain(os.getenv("TATUM_API_KEY"), os.getenv("BIN_KEY"), os.getenv("BIN_SECRET"))
                 wallet_info = client.get_wallet_info(wallet.address, network)
                 
-                wallet_list.append({
+                wallet_list[wallet.network] = {
                     'address': wallet.address,
                     'info': wallet_info,
-                    'network': wallet.network,
-                })
+                }
             return Response(wallet_list, status=status.HTTP_200_OK)
         except Exception as exception:
             raise ValidationError({"error": exception})

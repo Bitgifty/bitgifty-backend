@@ -95,7 +95,6 @@ class Blockchain(object):
         response = requests.get(url, headers=headers)
 
         data = response.json()
-        print(data)
         return data
     
     def get_wallet_info(self, address:str, network: str) -> dict:
@@ -292,8 +291,10 @@ class Blockchain(object):
         response = requests.post(url, json=payload, headers=headers)
 
         data = response.json()
-        print(data)
-        return data
+        if data.get('txId'):
+            return data
+        else:
+            raise ValueError(data.get('cause'))
 
     def generate_code(self):
         code = random.randint(000000, 999999)
@@ -323,8 +324,3 @@ class Blockchain(object):
             os.remove(f'{address}.png')
         except Exception as exception:
             raise ValueError({"error": str(exception)})
-
-# client = Blockchain(key=env("TATUM_API_KEY"), bin_key=env("BIN_KEY"), bin_secret=env("BIN_SECRET"))
-# print(client.send_token("TXdiUinn2ir1bkbkhkG7TGUxGhHPkzvaqH", "tron", "10", "602aa822d94192838a38fb9b7578b2005573ec56d5c489d97c83d6037d3565ed"))
-
-# print(client.upload_qrcode('test'))

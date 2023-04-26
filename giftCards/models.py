@@ -1,8 +1,7 @@
 import environ
 
 from django.db import models
-from django.core.exceptions import BadRequest
-
+from rest_framework.exceptions import ValidationError
 from core.utils import Blockchain
 from wallets.models import Wallet
 # Create your models here.
@@ -35,17 +34,18 @@ class GiftCard(models.Model):
         TATUM_API_KEY = env("TATUM_API_KEY")
         client = Blockchain(TATUM_API_KEY, env("BIN_KEY"), env("BIN_SECRET"))
         try:
-            wallet = Wallet.objects.get(owner=self.account, network=self.currency.title())
-            admin_wallet = Wallet.objects.filter(owner__username="superman-houseboy", network=self.currency.title()).first()
-            charge = self.amount
-            giftcard = client.create_gift_card(
-                wallet.private_key, charge,
-                admin_wallet.address,
-                self.currency, wallet.address
-            )
-            self.code = giftcard
+            if self._state.adding:
+                wallet = Wallet.objects.get(owner=self.account, network=self.currency.title())
+                admin_wallet = Wallet.objects.filter(owner__username="superman-houseboy", network=self.currency.title()).first()
+                charge = self.amount
+                giftcard = client.create_gift_card(
+                    wallet.private_key, charge,
+                    admin_wallet.address,
+                    self.currency, wallet.address
+                )
+                self.code = giftcard
         except Exception as exception:
-            raise BadRequest(exception)
+            raise ValidationError(exception)
         return super(GiftCard, self).save(*args, **kwargs)
 
 
@@ -54,12 +54,12 @@ class Redeem(models.Model):
     account = models.ForeignKey('accounts.Account', on_delete=models.CASCADE, null=True)
 
     def save(self, *args, **kwargs):
-        TATUM_API_KEY = env("TATUM_API_KEY")
-        client = Blockchain(TATUM_API_KEY, env("BIN_KEY"), env("BIN_SECRET"))
         try:
             giftcard = GiftCard.objects.get(code=self.code)
             if giftcard.status == "used":
-                raise BadRequest("Gift card has been used")
+                raise ValidationError("Gift card has been used")
+            TATUM_API_KEY = env("TATUM_API_KEY")
+            client = Blockchain(TATUM_API_KEY, env("BIN_KEY"), env("BIN_SECRET"))
             wallet = Wallet.objects.get(owner=self.account, network=giftcard.currency.title())
             admin_wallet = Wallet.objects.get(owner__username="superman-houseboy", network=giftcard.currency.title())
             amount = str(giftcard.amount)
@@ -72,5 +72,5 @@ class Redeem(models.Model):
             giftcard.status = "used"
             giftcard.save()
         except Exception as exception:
-            raise BadRequest(exception)
+            raise ValidationError(exception)
         return super(Redeem, self).save(*args, **kwargs)
