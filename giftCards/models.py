@@ -26,6 +26,7 @@ class GiftCard(models.Model):
     fees = models.FloatField(default=0.0)
     code = models.CharField(max_length=255, null=True, blank=True)
     status = models.CharField(max_length=255, default="generated")
+    creation_date = models.DateTimeField(auto_now_add=True, null=True)
 
     def __str__(self):
         return self.currency
