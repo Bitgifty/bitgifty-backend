@@ -53,6 +53,7 @@ class GiftCard(models.Model):
 class Redeem(models.Model):
     code = models.CharField(max_length=255)
     account = models.ForeignKey('accounts.Account', on_delete=models.CASCADE, null=True)
+    redemption_date = models.DateTimeField(auto_now_add=True, null=True)
 
     def save(self, *args, **kwargs):
         try:
