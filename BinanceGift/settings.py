@@ -149,7 +149,9 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3001",
     "http://127.0.0.1:5500",
     "http://bitgifty.netlify.app",
-    "https://bitgifty.netlify.app"
+    "https://bitgifty.netlify.app",
+    "https://bitgifty.com",
+    "http://bitgifty.com"
 ]
 
 # Password validation
