@@ -22,6 +22,7 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from django.urls import re_path
 from django.conf.urls.static import static
+from dj_rest_auth.views import PasswordResetConfirmView
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -40,6 +41,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('auth/', include('dj_rest_auth.urls')),
+    path('auth/password-reset-confirm/<uidb64>/<token>/',
+        PasswordResetConfirmView.as_view(),
+        name='password_reset_confirm'
+    ),  
     path('auth/registration/', include('dj_rest_auth.registration.urls')),
 
     path('gift_cards/', include('giftCards.urls')),
