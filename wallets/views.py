@@ -44,6 +44,7 @@ class WalletAPIView(generics.GenericAPIView):
                 wallet_list[wallet.network] = {
                     'address': wallet.address,
                     'info': wallet_info,
+                    'qrcode': wallet.qrcode,
                 }
             return Response(wallet_list, status=status.HTTP_200_OK)
         except Exception as exception:
