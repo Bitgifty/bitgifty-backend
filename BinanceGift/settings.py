@@ -231,10 +231,8 @@ SPECTACULAR_SETTINGS = {
 REST_AUTH = {
     'USER_DETAILS_SERIALIZER': 'accounts.serializers.CustomUserDetailSerializer',
     'PASSWORD_RESET_SERIALIZER': 'accounts.serializers.CustomPasswordResetSerializer',
-}
-
-REST_AUTH_REGISTER_SERIALIZERS = {
     "REGISTER_SERIALIZER": "accounts.serializers.CustomRegistrationSerializer",
+    'PASSWORD_RESET_USE_SITES_DOMAIN': True,
 }
 
 
