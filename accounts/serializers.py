@@ -56,7 +56,7 @@ class CustomUserDetailSerializer(UserDetailsSerializer):
     class Meta:
         model = User
         fields = ('pk', 'first_name', 'last_name', 'email', 'phone_number',)
-        read_only_fields = ('email', )
+        read_only_fields = ('email', 'first_name', 'last_name')
 
 
 class CustomPasswordResetSerializer(PasswordResetSerializer):
