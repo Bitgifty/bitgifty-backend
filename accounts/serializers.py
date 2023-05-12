@@ -63,5 +63,5 @@ class CustomPasswordResetSerializer(PasswordResetSerializer):
     def get_email_options(self):
         super().get_email_options()
         return {
-            'email_template_name': 'registration/custom_reset_confirm.txt',
+            'email_template_name': 'registration/custom_reset_confirm.html',
         }
