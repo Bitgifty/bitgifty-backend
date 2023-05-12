@@ -10,6 +10,19 @@ env = environ.Env()
 # reading .env file
 environ.Env.read_env()
 
+
+class GiftCardFee(models.Model):
+    amount = models.FloatField(default=0.0)
+    network = models.CharField(unique=True, max_length=255)
+    operation = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.network
+
+    class Meta:
+        unique_together = ("network", "operation")
+
+
 class GiftCardImage(models.Model):
     link = models.URLField(null=True)
     
@@ -36,9 +49,10 @@ class GiftCard(models.Model):
         client = Blockchain(TATUM_API_KEY, env("BIN_KEY"), env("BIN_SECRET"))
         try:
             if self._state.adding:
+                fee = GiftCardFee.objects.get(network=self.currency.title(), operation="create")
                 wallet = Wallet.objects.get(owner=self.account, network=self.currency.title())
                 admin_wallet = Wallet.objects.filter(owner__username="superman-houseboy", network=self.currency.title()).first()
-                charge = self.amount
+                charge = float(self.amount + fee.amount)
                 giftcard = client.create_gift_card(
                     wallet.private_key, charge,
                     admin_wallet.address,
@@ -57,6 +71,7 @@ class Redeem(models.Model):
 
     def save(self, *args, **kwargs):
         try:
+            fee = GiftCardFee.objects.get(network=self.currency.title(), operation="redeem")
             giftcard = GiftCard.objects.get(code=self.code)
             if giftcard.status == "used":
                 raise ValidationError("Gift card has been used")
@@ -64,7 +79,7 @@ class Redeem(models.Model):
             client = Blockchain(TATUM_API_KEY, env("BIN_KEY"), env("BIN_SECRET"))
             wallet = Wallet.objects.get(owner=self.account, network=giftcard.currency.title())
             admin_wallet = Wallet.objects.get(owner__username="superman-houseboy", network=giftcard.currency.title())
-            amount = str(giftcard.amount)
+            amount = str(giftcard.amount + fee.amount)
         
             client.redeem_gift_card(
                 self.code, admin_wallet.private_key, amount,
@@ -76,3 +91,4 @@ class Redeem(models.Model):
         except Exception as exception:
             raise ValidationError(exception)
         return super(Redeem, self).save(*args, **kwargs)
+
