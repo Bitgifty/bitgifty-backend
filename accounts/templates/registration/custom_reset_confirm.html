@@ -95,8 +95,9 @@
                     <p>
                         Please click the password reset button and choose a new password:
                     </p>
-
-                    <p>In case you forgot, your username is {{ username }}</p>
+                    {% if username %}
+                      <p>In case you forgot, your username is {{ username }}</p>
+                    {% endif %}
 
                     <br>
 
