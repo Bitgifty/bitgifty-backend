@@ -228,13 +228,15 @@ SPECTACULAR_SETTINGS = {
     # OTHER SETTINGS
 }
 
-REST_AUTH = {
+REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'accounts.serializers.CustomUserDetailSerializer',
     'PASSWORD_RESET_SERIALIZER': 'accounts.serializers.CustomPasswordResetSerializer',
-    "REGISTER_SERIALIZER": "accounts.serializers.CustomRegistrationSerializer",
     'PASSWORD_RESET_USE_SITES_DOMAIN': True,
 }
 
+REST_AUTH_REGISTER_SERIALIZERS =  {
+    "REGISTER_SERIALIZER": "accounts.serializers.CustomRegistrationSerializer",
+}
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'    
 EMAIL_HOST = env('EMAIL_HOST')
