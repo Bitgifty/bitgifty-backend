@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from dj_rest_auth.registration.serializers import RegisterSerializer
-from dj_rest_auth.serializers import UserDetailsSerializer
+from dj_rest_auth.serializers import UserDetailsSerializer, PasswordResetSerializer
 from django.contrib.auth import get_user_model, authenticate
 User = get_user_model()
 
@@ -57,3 +57,10 @@ class CustomUserDetailSerializer(UserDetailsSerializer):
         model = User
         fields = ('pk', 'first_name', 'last_name', 'email', 'phone_number',)
         read_only_fields = ('email', )
+
+
+class CustomPasswordResetSerializer(PasswordResetSerializer):
+    def get_email_options(self):
+        return {
+            'html_email_template_name': 'registration/custom_reset_confirm.html',
+        }

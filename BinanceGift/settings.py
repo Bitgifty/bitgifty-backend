@@ -230,6 +230,7 @@ SPECTACULAR_SETTINGS = {
 
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'accounts.serializers.CustomUserDetailSerializer',
+    # 'PASSWORD_RESET_SERIALIZER': 'accounts.serializers.CustomPasswordResetSerializer',
 }
 
 REST_AUTH_REGISTER_SERIALIZERS = {
@@ -244,5 +245,3 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = env('EMAIL_PORT')
 DEFAULT_FROM_EMAIL = 'info@bitgifty.com'
 EMAIL_USE_TLS = True
-
-PASSWORD_RESET_USE_SITES_DOMAIN = True
