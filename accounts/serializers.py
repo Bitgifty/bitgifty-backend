@@ -9,7 +9,7 @@ class CustomRegistrationSerializer(RegisterSerializer):
     username = serializers.CharField()
     email = serializers.EmailField()
     phone_number = serializers.CharField()
-    country = serializers.CharField()
+    country = serializers.CharField(required=False)
     referral_code = serializers.CharField(required=False)
 
     def validate(self, attrs):

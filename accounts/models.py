@@ -14,7 +14,7 @@ class Account(AbstractUser):
     wallet_address = models.CharField(max_length=555, null=True, blank=True)
     wallet_seed = models.CharField(max_length=555, null=True, blank=True)
     xpub = models.CharField(max_length=555, null=True, blank=True)
-    country = models.CharField(max_length=255)
+    country = models.CharField(max_length=255, null=True, blank=True)
     phone_number = models.CharField(max_length=255, null=True, blank=True)
     country = models.CharField(max_length=255)
     referral_code = models.CharField(max_length=255, null=True, blank=True)
