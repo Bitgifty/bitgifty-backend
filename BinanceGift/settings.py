@@ -238,10 +238,10 @@ REST_AUTH_REGISTER_SERIALIZERS =  {
     "REGISTER_SERIALIZER": "accounts.serializers.CustomRegistrationSerializer",
 }
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'    
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = env('EMAIL_HOST')
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = env('EMAIL_PORT')
-DEFAULT_FROM_EMAIL = 'dev@bitgifty.com'
+DEFAULT_FROM_EMAIL = 'BitGifty <dev@bitgifty.com>'
 EMAIL_USE_TLS = True
