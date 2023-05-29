@@ -16,7 +16,7 @@ class Account(AbstractUser):
     xpub = models.CharField(max_length=555, null=True, blank=True)
     country = models.CharField(max_length=255, null=True, blank=True)
     phone_number = models.CharField(max_length=255, null=True, blank=True)
-    country = models.CharField(max_length=255)
+    country = models.CharField(max_length=255, null=True, blank=True)
     referral_code = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
