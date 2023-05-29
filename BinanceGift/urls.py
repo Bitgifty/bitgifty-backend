@@ -23,6 +23,7 @@ from drf_yasg import openapi
 from django.urls import re_path
 from django.conf.urls.static import static
 from dj_rest_auth.views import PasswordResetConfirmView
+from dj_rest_auth.registration.views import VerifyEmailView
 
 schema_view = get_schema_view(
    openapi.Info(

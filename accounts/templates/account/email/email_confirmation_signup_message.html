@@ -1,4 +1,6 @@
 {% load static %}
+{% load account %}
+{% load i18n %}
 <!DOCTYPE html>
 <html
   lang="en"
@@ -86,13 +88,41 @@
                       text-align: left;
                     "
                   >
-                    <h1>Gift Card</h1>
-                    <p style="font-size: 14px">
-                        You're receiving this e-mail because {{ sender_email }} gifted you a giftcard.
-                        Please visit https://bitgifty.com to redeem this card.
-                        The redeem code is {{ code }}.
-                        Please, refrain from sharing with anybody.
-                    </p>
+                    <h1>Confirm E-mail Address</h1>
+                    {% if confirmation %}
+                    {% user_display confirmation.email_address.user as user_display %}
+
+                    <p style="font-size: 14px">{% blocktrans with confirmation.email_address.email as email %}Please confirm that <a href="mailto:{{ email }}">{{ email }}</a> is an e-mail address for user {{ user_display }}.{% endblocktrans %}</p>
+
+                    <form method="post" action="{% url 'auth_registration_verify-email_create' confirmation.key %}">
+                    {% csrf_token %}
+                        <button type="submit">{% trans 'Confirm' %}</button>
+                    </form>
+                    {% else %}
+                    {% url 'account_email' as email_url %}
+
+                    <p style="font-size: 14px">{% blocktrans %}This e-mail confirmation link expired or is invalid. Please <a href="{{ email_url }}">issue a new e-mail confirmation request</a>.{% endblocktrans %}</p>
+
+                    {% endif %}
+
+
+                    
+                    <button
+                      style="
+                        border: none;
+                        background: #38c7e7;
+                        padding: 11px 44px;
+                        color: #ffffff;
+                        border-radius: 5px;
+                        font-weight: 700;
+                      "
+                    >
+                      <a
+                        href="https://{{site_name}}"
+                        style="text-decoration: none; color: inherit"
+                        >Password Reset</a
+                      >
+                    </button>
                   </td>
                 </tr>
                 <!-- start spacer -->
