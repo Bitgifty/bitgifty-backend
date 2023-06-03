@@ -1,15 +1,13 @@
 name: BitGifty CI-CD
-
 on:
     # Triggers the workflow on push or pull request events but only for the masterii branch
     
     push:
-    branches: [master]
+      branches: [master]
     pull_request:
-    branches: [master]
+      branches: [master]
     # Run this workflow manually from the Actions tab on Repo homepage
     workflow_dispatch:
-
 jobs:
   push_to_server:
     name: Install requirements and execute tests
