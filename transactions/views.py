@@ -32,7 +32,7 @@ class TransactionListAPIView(generics.GenericAPIView):
         # try:
         user = request.user
         wallet_dict = {}
-        client = Blockchain(env("TATUM_API_KEY"), env("BIN_KEY"), env("BIN_SECRET"))
+        client = Blockchain(os.getenv("TATUM_API_KEY"), os.getenv("BIN_KEY"), os.getenv("BIN_SECRET"))
         
         if network == "all":
             wallets = Wallet.objects.filter(owner=user)
@@ -61,7 +61,7 @@ class WithdrawAPIView(generics.GenericAPIView):
             receiver_address = serializer.validated_data.get("receiver_address")
             amount = serializer.validated_data.get("amount")
             network = serializer.validated_data.get("network")
-            client = Blockchain(env("TATUM_API_KEY"), env("BIN_KEY"), env("BIN_SECRET"))
+            client = Blockchain(os.getenv("TATUM_API_KEY"), os.getenv("BIN_KEY"), os.getenv("BIN_SECRET"))
             
             try:
                 wallet = Wallet.objects.get(owner=user, network=network)

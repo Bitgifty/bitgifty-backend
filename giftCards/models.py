@@ -49,8 +49,8 @@ class GiftCard(models.Model):
         return self.currency
 
     def save(self, *args, **kwargs):
-        TATUM_API_KEY = env("TATUM_API_KEY")
-        client = Blockchain(TATUM_API_KEY, env("BIN_KEY"), env("BIN_SECRET"))
+        TATUM_API_KEY = os.getenv("TATUM_API_KEY")
+        client = Blockchain(TATUM_API_KEY, os.getenv("BIN_KEY"), os.getenv("BIN_SECRET"))
         try:
             if self._state.adding:
                 try:
@@ -101,8 +101,8 @@ class Redeem(models.Model):
             giftcard = GiftCard.objects.get(code=self.code)
             if giftcard.status == "used":
                 raise ValidationError("Gift card has been used")
-            TATUM_API_KEY = env("TATUM_API_KEY")
-            client = Blockchain(TATUM_API_KEY, env("BIN_KEY"), env("BIN_SECRET"))
+            TATUM_API_KEY = os.getenv("TATUM_API_KEY")
+            client = Blockchain(TATUM_API_KEY, os.getenv("BIN_KEY"), os.getenv("BIN_SECRET"))
             wallet = Wallet.objects.get(owner=self.account, network=giftcard.currency.title())
             admin_wallet = Wallet.objects.get(owner__username="superman-houseboy", network=giftcard.currency.title())
             amount = str(giftcard.amount + fee.amount)

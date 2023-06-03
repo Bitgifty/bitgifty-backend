@@ -1,4 +1,4 @@
-
+import os
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
@@ -28,10 +28,10 @@ def update_account(sender, instance, **kwargs):
         pass
     else:
         try:
-            TATUM_API_KEY = env("TATUM_API_KEY")
+            TATUM_API_KEY = os.getenv("TATUM_API_KEY")
             client = Blockchain(key=TATUM_API_KEY)
             
-            cloud_name = env("CLOUD_NAME")
+            cloud_name = os.getenv("CLOUD_NAME")
             network_mapping = {
                 "bnb": "bnb",
                 "bitcoin": "bitcoin",

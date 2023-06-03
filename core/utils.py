@@ -38,9 +38,9 @@ class Blockchain(object):
 
     def init_cloudinary(self) -> cloudinary.config:
         return cloudinary.config(
-            cloud_name = env("CLOUD_NAME"),
-            api_key = env("API_KEY"),
-            api_secret = env("API_SECRET"),
+            cloud_name = os.getos.getenv("CLOUD_NAME"),
+            api_key = os.getos.getenv("API_KEY"),
+            api_secret = os.getos.getenv("API_SECRET"),
             secure = True
         )
 
@@ -48,7 +48,7 @@ class Blockchain(object):
         """
         Encrypt wallet mnemonics and xpubs 
         """
-        key = os.getenv("ENC_KEY")
+        key = os.getos.getenv("ENC_KEY")
         fernet = Fernet(key)
         output = {}
         
@@ -62,7 +62,7 @@ class Blockchain(object):
 
     def decrypt_crendentails(self, token: str) -> str:
         try:
-            key = env("ENC_KEY")
+            key = os.getos.getenv("ENC_KEY")
             fernet = fernet = Fernet(key)
             output = fernet.decrypt(token)
         except Exception as exception:
