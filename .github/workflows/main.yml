@@ -9,26 +9,36 @@ on:
     # Run this workflow manually from the Actions tab on Repo homepage
     workflow_dispatch:
 jobs:
-  push_to_server:
-    name: Install requirements and execute tests
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy to VPS
-        uses: actions/checkout@v3
-        with:
+      - uses: actions/checkout@v3
+      - name: Copy repository contents via scp
+        uses: appleboy/scp-action@master
+        env:
           # VPS IP
-          host: ${{ secrets.VPS_SSH_HOST }}       
+          HOST: ${{ secrets.VPS_SSH_HOST }}       
           # VPS username
-          username: ${{ secrets.VPS_SSH_USERNAME }}
+          USERNAME: ${{ secrets.VPS_SSH_USERNAME }}
           # SSH key (copy it from your local machine)
-          key: ${{ secrets.VPS_SSH_SECRET }}
+          KEY: ${{ secrets.VPS_SSH_SECRET }}
           # SSH port
-          port: ${{ secrets.VPS_SSH_PORT }}
-          # passphrase
-          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          PORT: ${{ secrets.VPS_SSH_PORT }}
+        with:
+          source: "."
+          target: "/home/princewill/bitgifty/InvestEasy"
+        # with:
+      - name: Executing remote command
+        uses: appleboy/ssh-action@master
+        with:
+          HOST: ${{ secrets.VPS_SSH_HOST }}       
+          # VPS username
+          USERNAME: ${{ secrets.VPS_SSH_USERNAME }}
+          # SSH key (copy it from your local machine)
+          KEY: ${{ secrets.VPS_SSH_SECRET }}
+          # SSH port
+          PORT: ${{ secrets.VPS_SSH_PORT }}
           script: |
-            cd ${{ secrets.PROJECT_PATH }}
-            git pull origin master
             make down
             make build
             echo "Deleting old image(s)..."
