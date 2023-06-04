@@ -36,8 +36,4 @@ jobs:
           key: ${{ secrets.VPS_SSH_SECRET }}
           # SSH port
           port: ${{ secrets.VPS_SSH_PORT }}
-          script: |
-            make down
-            make build
-            echo "Deleting old image(s)..."
-            docker image prune -a -f
+          run: make down && make build && echo "Deleting old image(s)..." && docker image prune -a -f
