@@ -28,7 +28,7 @@ jobs:
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
             cd ${{ secrets.PROJECT_PATH }}
-            git pull origin main
+            git pull origin master
             make down
             make build
             echo "Deleting old image(s)..."
