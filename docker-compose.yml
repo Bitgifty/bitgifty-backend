@@ -11,24 +11,24 @@ services:
     expose:
       - 8000
     environment:
-      - TATUM_API_KEY=${TATUM_API_KEY}
-      - BIN_KEY=${BIN_KEY}
-      - BIN_SECRET=${BIN_SECRET}
-      - ENC_KEY=${ENC_KEY}
-      - SECRET_KEY=${SECRET_KEY}
-      - DEBUG=${DEBUG}
-      - PRIVATE_KEY=${PRIVATE_KEY}
-      - API_KEY=${API_KEY}
-      - API_SECRET=${API_SECRET}
-      - CLOUD_NAME=${CLOUD_NAME}
-      - DB_NAME=${DB_NAME}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_HOST=${DB_HOST}
-      - EMAIL_HOST=${EMAIL_HOST}
-      - EMAIL_HOST_USER=${EMAIL_HOST_USER}
-      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
-      - EMAIL_PORT=${EMAIL_PORT}
+      - TATUM_API_KEY=${{ secrets.TATUM_API_KEY }}
+      - BIN_KEY=${{ secrets.BIN_KEY }}
+      - BIN_SECRET=${{ secrets.BIN_SECRET }}
+      - ENC_KEY=${{ secrets.ENC_KEY }}
+      - SECRET_KEY=${{ secrets.SECRET_KEY }}
+      - DEBUG=${{ secrets.DEBUG }}
+      - PRIVATE_KEY=${{ secrets.PRIVATE_KEY }}
+      - API_KEY=${{ secrets.API_KEY }}
+      - API_SECRET=${{ secrets.API_SECRET }}
+      - CLOUD_NAME=${{ secrets.CLOUD_NAME }}
+      - DB_NAME=${{ secrets.DB_NAME }}
+      - DB_USER=${{ secrets.DB_USER }}
+      - DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+      - DB_HOST=${{ secrets.DB_HOST }}
+      - EMAIL_HOST=${{ secrets.EMAIL_HOST }}
+      - EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}
+      - EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}
+      - EMAIL_PORT=${{ secrets.EMAIL_PORT }}
 
 
   nginx:
