@@ -10,6 +10,26 @@ services:
       - .:/app
     expose:
       - 8000
+    environment:
+      - TATUM_API_KEY=${TATUM_API_KEY}
+      - BIN_KEY=${BIN_KEY}
+      - BIN_SECRET=${BIN_SECRET}
+      - ENC_KEY=${ENC_KEY}
+      - SECRET_KEY=${SECRET_KEY}
+      - DEBUG=${DEBUG}
+      - PRIVATE_KEY=${PRIVATE_KEY}
+      - API_KEY=${API_KEY}
+      - API_SECRET=${API_SECRET}
+      - CLOUD_NAME=${CLOUD_NAME}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST}
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_HOST_USER=${EMAIL_HOST_USER}
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+      - EMAIL_PORT=${EMAIL_PORT}
+
 
   nginx:
     container_name: nginx

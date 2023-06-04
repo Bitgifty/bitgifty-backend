@@ -2,7 +2,6 @@ db.sqlite3
 *__pycache__/
 .env
 Logs
-nginx
 staticfiles/*
 static/*
 !staticfiles/.gitkeep
