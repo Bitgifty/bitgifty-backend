@@ -47,6 +47,7 @@ urlpatterns = [
         name='password_reset_confirm'
     ),  
     path('auth/registration/', include('dj_rest_auth.registration.urls')),
+    path('env/', include('core.urls')),
 
     path('gift_cards/', include('giftCards.urls')),
 

@@ -1,8 +1,6 @@
 from django.db import models
-from core.utils import Blockchain, env_init
 # Create your models here.
 
-env = env_init()
 
 class Wallet(models.Model):
     network_choice = (

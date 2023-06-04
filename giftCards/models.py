@@ -10,10 +10,6 @@ from core.utils import Blockchain
 from wallets.models import Wallet
 # Create your models here.
 
-env = environ.Env()
-# reading .env file
-environ.Env.read_env()
-
 
 class GiftCardFee(models.Model):
     amount = models.FloatField(default=0.0)

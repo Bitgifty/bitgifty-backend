@@ -15,14 +15,6 @@ from cloudinary.uploader import upload
 from cloudinary.utils import cloudinary
 
 
-
-def env_init():
-    env = environ.Env()
-    BASE_DIR = Path(__file__).resolve().parent.parent
-    environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
-    return env
-
-env = env_init()
 class Blockchain(object):
     def __init__(self, key: str, bin_key: str = None, bin_secret: str=None) -> None:
         self.key = key
@@ -38,9 +30,9 @@ class Blockchain(object):
 
     def init_cloudinary(self) -> cloudinary.config:
         return cloudinary.config(
-            cloud_name = os.getos.getenv("CLOUD_NAME"),
-            api_key = os.getos.getenv("API_KEY"),
-            api_secret = os.getos.getenv("API_SECRET"),
+            cloud_name = os.getenv("CLOUD_NAME"),
+            api_key = os.getenv("API_KEY"),
+            api_secret = os.getenv("API_SECRET"),
             secure = True
         )
 

@@ -17,10 +17,7 @@ from core.utils import Blockchain
 from wallets.models import Wallet
 from drf_yasg.renderers import OpenAPIRenderer, SwaggerUIRenderer
 
-from core.utils import env_init
 # Create your views here.
-
-env = env_init()
 
 class TransactionListAPIView(generics.GenericAPIView):
     serializer_class = serializers.TransactionSerializer

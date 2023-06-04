@@ -38,7 +38,7 @@ class WalletAPIView(generics.GenericAPIView):
             for wallet in wallets:
                 network_key = wallet.network.lower()
                 network = network_mapping[network_key]
-                client = Blockchain(os.getos.getenv("TATUM_API_KEY"), os.getos.getenv("BIN_KEY"), os.getos.getenv("BIN_SECRET"))
+                client = Blockchain(os.getenv("TATUM_API_KEY"), os.getenv("BIN_KEY"), os.getenv("BIN_SECRET"))
                 wallet_info = client.get_wallet_info(wallet.address, network)
                 
                 wallet_list[wallet.network] = {
