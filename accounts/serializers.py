@@ -8,7 +8,7 @@ User = get_user_model()
 class CustomRegistrationSerializer(RegisterSerializer):
     username = serializers.CharField()
     email = serializers.EmailField()
-    phone_number = serializers.CharField()
+    phone_number = serializers.CharField(required=False)
     country = serializers.CharField(required=False)
     referral_code = serializers.CharField(required=False)
 
