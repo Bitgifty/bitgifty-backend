@@ -93,7 +93,7 @@ class Redeem(models.Model):
     def save(self, *args, **kwargs):
         try:
             try:
-                fee = GiftCardFee.objects.get(network=self.currency.title(), operation="redeem")
+                fee = GiftCardFee.objects.get(network=self.currency.title(), operation="redeem").amount
             except Exception:
                 fee = 0.0
             giftcard = GiftCard.objects.get(code=self.code)
@@ -103,7 +103,7 @@ class Redeem(models.Model):
             client = Blockchain(TATUM_API_KEY, os.getenv("BIN_KEY"), os.getenv("BIN_SECRET"))
             wallet = Wallet.objects.get(owner=self.account, network=giftcard.currency.title())
             admin_wallet = Wallet.objects.get(owner__username="superman-houseboy", network=giftcard.currency.title())
-            amount = str(giftcard.amount + fee.amount)
+            amount = str(giftcard.amount + fee)
         
             client.redeem_gift_card(
                 self.code, admin_wallet.private_key, amount,
