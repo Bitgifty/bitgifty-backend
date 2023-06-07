@@ -40,7 +40,7 @@ class Blockchain(object):
         """
         Encrypt wallet mnemonics and xpubs 
         """
-        key = os.getos.getenv("ENC_KEY")
+        key = os.getenv("ENC_KEY")
         fernet = Fernet(key)
         output = {}
         
@@ -54,7 +54,7 @@ class Blockchain(object):
 
     def decrypt_crendentails(self, token: str) -> str:
         try:
-            key = os.getos.getenv("ENC_KEY")
+            key = os.getenv("ENC_KEY")
             fernet = fernet = Fernet(key)
             output = fernet.decrypt(token)
         except Exception as exception:
