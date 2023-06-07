@@ -71,6 +71,7 @@ class GiftCard(models.Model):
                             'receipent_email': self.receipent_email,
                             'sender_email': self.account.email,
                             'code': self.code,
+                            'note': self.note,
                         }
                     )
                     plain_message = strip_tags(html_message)
