@@ -1,7 +1,7 @@
 import os
 import requests
 import random
-
+import secrets
 
 import environ
 import qrcode
@@ -289,7 +289,7 @@ class Blockchain(object):
             raise ValueError(data.get('cause'))
 
     def generate_code(self):
-        code = random.randint(000000, 999999)
+        code = secrets.token_hex(16)
         return code
 
     def create_gift_card(self, private_key: str, amount: str, receiver_address: str, network: str, sender_address: str) -> dict:
