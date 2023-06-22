@@ -62,7 +62,7 @@ class Blockchain(object):
         return output.decode()
     
     def generate_credentials(self, network: str) -> dict:
-        url = f"https://api.tatum.io/v3/{network}/wallet?type=testnet"
+        url = f"https://api.tatum.io/v3/{network}/wallet/"
         headers = {"x-api-key": self.key}
         response = requests.get(url, headers=headers)
         data = response.json()
@@ -80,7 +80,7 @@ class Blockchain(object):
 
     def generate_wallet(self, xpub: str, network: str) -> dict:
         index = 1
-        url = f"https://api.tatum.io/v3/{network}/address/{xpub}/{index}?type=testnet"
+        url = f"https://api.tatum.io/v3/{network}/address/{xpub}/{index}/"
 
         headers = {"x-api-key": self.key}
 
@@ -90,14 +90,14 @@ class Blockchain(object):
         return data
     
     def get_wallet_info(self, address:str, network: str) -> dict:
-        url = f"https://api.tatum.io/v3/{network}/account/balance/{address}?type=testnet"
+        url = f"https://api.tatum.io/v3/{network}/account/balance/{address}/"
         
         if network == "tron":
-            url = f"https://api.tatum.io/v3/{network}/account/{address}?type=testnet"
+            url = f"https://api.tatum.io/v3/{network}/account/{address}/"
         elif network == "bitcoin":
-            url = f"https://api.tatum.io/v3/{network}/address/balance/{address}?type=testnet"
+            url = f"https://api.tatum.io/v3/{network}/address/balance/{address}/"
         elif network == "bnb":
-            url = f"https://api.tatum.io/v3/{network}/account/{address}?type=testnet"
+            url = f"https://api.tatum.io/v3/{network}/account/{address}/"
         
 
         headers = {"x-api-key": self.key}
@@ -111,7 +111,7 @@ class Blockchain(object):
         combined_output = {}
 
         tron = {
-            "url": f"https://api.tatum.io/v3/tron/transaction/account/{address.get('tron')}?type=testnet"
+            "url": f"https://api.tatum.io/v3/tron/transaction/account/{address.get('tron')}/"
         }
 
         bnb = {
@@ -123,21 +123,21 @@ class Blockchain(object):
         }
 
         bitcoin = {
-            "url": f"https://api.tatum.io/v3/bitcoin/transaction/address/{address.get('bitcoin')}?type=testnet",
+            "url": f"https://api.tatum.io/v3/bitcoin/transaction/address/{address.get('bitcoin')}/",
             "query": {
                 "pageSize": "10"
             }
         }
 
         celo = {
-            "url": f"https://api.tatum.io/v3/celo/account/transaction/{address.get('celo')}?type=testnet",
+            "url": f"https://api.tatum.io/v3/celo/account/transaction/{address.get('celo')}/",
             "query": {
                 "pageSize": "10"
             }
         }
 
         ethereum = {
-            "url": f"https://api.tatum.io/v3/ethereum/account/transaction/{address.get('ethereum')}?type=testnet",
+            "url": f"https://api.tatum.io/v3/ethereum/account/transaction/{address.get('ethereum')}/",
             "query": {
                 "pageSize": "10"
             }
@@ -199,7 +199,7 @@ class Blockchain(object):
                 "to": receiver_address,
                 "amount": str(amount)
             },
-            "url": "https://api.tatum.io/v3/tron/transaction?type=testnet"
+            "url": "https://api.tatum.io/v3/tron/transaction/"
         }
 
         tron_usdt = {

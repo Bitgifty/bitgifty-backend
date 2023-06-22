@@ -81,7 +81,7 @@ class GiftCard(models.Model):
                     )
 
         except Exception as exception:
-            raise ValidationError({"error": "something went wrong", "detail": str(exception)})
+            raise ValidationError(exception)
         return super(GiftCard, self).save(*args, **kwargs)
 
 
@@ -100,7 +100,7 @@ class Redeem(models.Model):
             try:
                 giftcard = GiftCard.objects.get(code=self.code)
             except Exception as exception:
-                raise ValidationError({"error": "giftcard not found", "detail": str(exception)})
+                raise ValidationError({"error": "giftcard not found", "detail": exception})
 
             if giftcard.status == "used":
                 raise ValidationError({"error": "Gift card has been used"})
@@ -135,6 +135,6 @@ class Redeem(models.Model):
                 [self.account.email], html_message=html_message
             )
         except Exception as exception:
-            raise ValidationError({"error": "something went wrong", "detail": str(exception)})
+            raise ValidationError(exception)
         return super(Redeem, self).save(*args, **kwargs)
 

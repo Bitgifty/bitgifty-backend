@@ -94,18 +94,14 @@
 
                     <p style="font-size: 14px">{% blocktrans with confirmation.email_address.email as email %}Please confirm that <a href="mailto:{{ email }}">{{ email }}</a> is an e-mail address for user {{ user_display }}.{% endblocktrans %}</p>
 
-                    <form method="post" action="{% url 'auth_registration_verify-email_create' confirmation.key %}">
+                    <form method="post" action="{% confirmation.key %}">
                     {% csrf_token %}
                         <button type="submit">{% trans 'Confirm' %}</button>
                     </form>
                     {% else %}
                     {% url 'account_email' as email_url %}
 
-                    <p style="font-size: 14px">{% blocktrans %}This e-mail confirmation link expired or is invalid. Please <a href="{{ email_url }}">issue a new e-mail confirmation request</a>.{% endblocktrans %}</p>
-
-                    {% endif %}
-
-
+                    
                     
                     <button
                       style="
@@ -118,7 +114,7 @@
                       "
                     >
                       <a
-                        href="https://{{site_name}}"
+                          href="https://{{activate_url}}{{confirmation.key}}"
                         style="text-decoration: none; color: inherit"
                         >Password Reset</a
                       >
