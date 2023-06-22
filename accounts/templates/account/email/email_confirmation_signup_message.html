@@ -89,17 +89,11 @@
                     "
                   >
                     <h1>Confirm E-mail Address</h1>
-                    {% if confirmation %}
-                    {% user_display confirmation.email_address.user as user_display %}
+                    
+                    <p>You're receiving this e-mail because user {{ user_display }} has given your e-mail address to register an account on bitgifty.<p>
 
-                    <p style="font-size: 14px">{% blocktrans with confirmation.email_address.email as email %}Please confirm that <a href="mailto:{{ email }}">{{ email }}</a> is an e-mail address for user {{ user_display }}.{% endblocktrans %}</p>
-
-                    <form method="post" action="{% confirmation.key %}">
-                    {% csrf_token %}
-                        <button type="submit">{% trans 'Confirm' %}</button>
-                    </form>
-                    {% else %}
-                    {% url 'account_email' as email_url %}
+                    <p style="font-size: 14px">To confirm this is correct, go to {{ activate_url }}{{ confirmation.key }}
+                    </p>
 
                     
                     
