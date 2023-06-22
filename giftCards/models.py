@@ -81,7 +81,7 @@ class GiftCard(models.Model):
                     )
 
         except Exception as exception:
-            raise ValidationError(exception)
+            raise ValidationError({"error": "something went wrong", "detail": str(exception)})
         return super(GiftCard, self).save(*args, **kwargs)
 
 
@@ -96,9 +96,15 @@ class Redeem(models.Model):
                 fee = GiftCardFee.objects.get(network=self.currency.title(), operation="redeem").amount
             except Exception:
                 fee = 0.0
-            giftcard = GiftCard.objects.get(code=self.code)
+            
+            try:
+                giftcard = GiftCard.objects.get(code=self.code)
+            except Exception as exception:
+                raise ValidationError({"error": "giftcard not found", "detail": str(exception)})
+
             if giftcard.status == "used":
-                raise ValidationError("Gift card has been used")
+                raise ValidationError({"error": "Gift card has been used"})
+
             TATUM_API_KEY = os.getenv("TATUM_API_KEY")
             client = Blockchain(TATUM_API_KEY, os.getenv("BIN_KEY"), os.getenv("BIN_SECRET"))
             wallet = Wallet.objects.get(owner=self.account, network=giftcard.currency.title())
@@ -129,6 +135,6 @@ class Redeem(models.Model):
                 [self.account.email], html_message=html_message
             )
         except Exception as exception:
-            raise ValidationError(exception)
+            raise ValidationError({"error": "something went wrong", "detail": str(exception)})
         return super(Redeem, self).save(*args, **kwargs)
 
