@@ -6,14 +6,14 @@ User = get_user_model()
 
 
 class CustomRegistrationSerializer(RegisterSerializer):
-    username = serializers.CharField()
+    # username = serializers.CharField()
     email = serializers.EmailField()
     phone_number = serializers.CharField(required=False)
     country = serializers.CharField(required=False)
     referral_code = serializers.CharField(required=False)
 
     def validate(self, attrs):
-        username = attrs.get('username')
+        email = attrs.get('email')
         password = attrs.get("password1")
 
         if password.isdigit():
@@ -23,8 +23,8 @@ class CustomRegistrationSerializer(RegisterSerializer):
         if len(password) < 8:
             raise serializers.ValidationError({'error': 'Password too short'})
 
-        if username:
-            if User.objects.filter(username=username).exists():
+        if email:
+            if User.objects.filter(email=email).exists():
                 msg = {'error': 'User aleady exists'}
                 raise serializers.ValidationError(msg)
             else:
@@ -35,7 +35,7 @@ class CustomRegistrationSerializer(RegisterSerializer):
 
     def custom_signup(self, request, user):
         # general
-        user.username = self.validated_data.get('username', '')
+        user.username = self.validated_data.get('email', '')
         user.email = self.validated_data.get('email', '')
         user.phone_number = self.validated_data.get('phone_number', '')
         user.country = self.validated_data.get('country', '')

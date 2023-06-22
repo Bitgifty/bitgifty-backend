@@ -112,6 +112,22 @@ class Redeem(models.Model):
     
             giftcard.status = "used"
             giftcard.save()
+
+            subject = "Gift Card Redeemed"
+            html_message = render_to_string(
+                'giftcard_redeem.html',
+                {
+                    'receipent_email': self.account.email,
+                    'code': self.code,
+                    'note': self.note,
+                }
+            )
+                
+            plain_message = strip_tags(html_message)
+            mail.send_mail(
+                subject, plain_message, "BitGifty <dev@bitgifty.com>",
+                [self.account.email], html_message=html_message
+            )
         except Exception as exception:
             raise ValidationError(exception)
         return super(Redeem, self).save(*args, **kwargs)

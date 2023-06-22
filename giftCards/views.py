@@ -13,7 +13,7 @@ class GiftCardAPIView(ListCreateAPIView):
     queryset = GiftCard.objects.all()
 
     def list(self, request, *args, **kwargs):
-        queryset = GiftCard.objects.filter(account=request.user)
+        queryset = GiftCard.objects.filter(account=request.user).order_by("-id")
         page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
