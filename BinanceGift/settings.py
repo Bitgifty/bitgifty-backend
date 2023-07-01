@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
-import logging.config
+import datetime
 
 # # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -64,7 +64,7 @@ INSTALLED_APPS = [
     'corsheaders',
 
     'rest_framework',
-    'rest_framework.authtoken',
+    'knox',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -217,13 +217,16 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         # new
         'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.TokenAuthentication'
+        'knox.auth.TokenAuthentication'
     ],
 
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 25
 
 }
+
+TOKEN_TTL = datetime.timedelta(hours=12)
+TOKEN_LIMIT_PER_USER = 1
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Gift Carded',
