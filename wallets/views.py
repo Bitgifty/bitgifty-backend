@@ -154,3 +154,18 @@ def recreate_wallet(request):
             i+=1
             user_wallet.save()
     return HttpResponse("success")
+
+
+def recreate_qr(request):
+    cloud_name = os.getenv("CLOUD_NAME")
+    TATUM_API_KEY = os.getenv("TATUM_API_KEY")
+    client = Blockchain(key=TATUM_API_KEY)
+    
+    accounts = Account.objects.all()
+    for account in accounts:
+        wallet = Wallet.objects.get(owner=account, network="Bnb")
+        client.upload_qrcode(wallet.address, account.email)
+        wallet.qrcode=f'https://res.cloudinary.com/{cloud_name}/image/upload/qr_code/{account.email}/{wallet.address}.png'
+        wallet.save()
+    
+    return HttpResponse("success")
