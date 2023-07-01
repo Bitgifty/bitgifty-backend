@@ -41,7 +41,7 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('auth/', include('dj_rest_auth.urls')),
+    path('auth/', include('knox.urls')),
     path('auth/account-confirm-email/', VerifyEmailView.as_view(), name='account_email_verification_sent'),
     path('auth/password/password-reset-confirm/<uidb64>/<token>/',
         PasswordResetConfirmView.as_view(),
