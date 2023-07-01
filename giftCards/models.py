@@ -127,7 +127,7 @@ class Redeem(models.Model):
                 {
                     'receipent_email': self.account.email,
                     'code': self.code,
-                    'note': self.note,
+                    'note': note,
                 }
             )
                 
