@@ -116,9 +116,8 @@ class Redeem(models.Model):
                 self.code, admin_wallet.private_key, amount,
                 wallet.address, giftcard.currency, admin_wallet.address
             )
-            note = ""
-            if self.note:
-                note = self.note
+    
+            note = giftcard.note
             giftcard.status = "used"
             giftcard.save()
 
