@@ -286,7 +286,7 @@ class Blockchain(object):
         if data.get('txId'):
             return data
         else:
-            raise ValueError(data.get('cause'))
+            raise ValueError(data)
 
     def generate_code(self):
         code = secrets.token_hex(16)
@@ -315,4 +315,4 @@ class Blockchain(object):
         try:
             os.remove(f'{address}.png')
         except Exception as exception:
-            raise ValueError({"error": str(exception)})
+            raise ValueError(str(exception))

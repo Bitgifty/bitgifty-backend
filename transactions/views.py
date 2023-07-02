@@ -16,6 +16,7 @@ from .models import Transaction
 from core.utils import Blockchain
 from wallets.models import Wallet
 from drf_yasg.renderers import OpenAPIRenderer, SwaggerUIRenderer
+from drf_yasg.utils import swagger_auto_schema
 
 # Create your views here.
 
@@ -24,6 +25,7 @@ class TransactionListAPIView(generics.GenericAPIView):
     queryset = Transaction.objects.all()
     renderer_classes = [JSONRenderer, BrowsableAPIRenderer, OpenAPIRenderer, SwaggerUIRenderer]
 
+    @swagger_auto_schema(request_body=serializers.TransactionSerializer)
     def get(self, request, network):
         """Confirms if a payment is legit"""
         # try:
@@ -48,8 +50,9 @@ class TransactionListAPIView(generics.GenericAPIView):
 
 class WithdrawAPIView(generics.GenericAPIView):
     serializer_class = serializers.WithdrawalSerializer
-    renderer_classes = [OpenAPIRenderer, SwaggerUIRenderer]
+    renderer_classes = [JSONRenderer, BrowsableAPIRenderer, OpenAPIRenderer, SwaggerUIRenderer]
 
+    @swagger_auto_schema(request_body=serializers.WithdrawalSerializer)
     def post(self, request):
         serializer = serializers.WithdrawalSerializer(data=request.data)
 
@@ -63,10 +66,13 @@ class WithdrawAPIView(generics.GenericAPIView):
             try:
                 wallet = Wallet.objects.get(owner=user, network=network)
             except Exception:
-                raise ValidationError({"error": "Sender wallet not found"})
+                raise ValidationError("Sender wallet not found")
             private_key = wallet.private_key
             mnemonic = client.decrypt_crendentails(private_key)
-            response = client.send_token(receiver_address, network.lower(), str(amount), mnemonic, wallet.address)
+            try:
+                response = client.send_token(receiver_address, network.lower(), str(amount), mnemonic, wallet.address)
+            except Exception as exception:
+                raise ValidationError(str(exception))
             if response.get("txId"):
                 return Response(response)
             else:
