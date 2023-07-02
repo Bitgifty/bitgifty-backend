@@ -7,7 +7,7 @@ from django.http import Http404
 from rest_framework import generics
 from rest_framework.renderers import JSONRenderer, BrowsableAPIRenderer
 from rest_framework.response import Response
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ParseError as ValidationError
 
 
 from . import serializers

@@ -63,6 +63,7 @@ INSTALLED_APPS = [
 
     'corsheaders',
 
+    "drf_standardized_errors",
     'rest_framework',
     # 'rest_framework.authtoken',
     'knox',
@@ -221,11 +222,12 @@ REST_FRAMEWORK = {
         # 'rest_framework.authentication.TokenAuthentication',
         'knox.auth.TokenAuthentication'
     ],
-
+    "EXCEPTION_HANDLER": "drf_standardized_errors.handler.exception_handler",
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 25
 
 }
+DRF_STANDARDIZED_ERRORS = {"EXCEPTION_FORMATTER_CLASS": "core.customError.MyExceptionFormatter"}
 
 TOKEN_TTL = datetime.timedelta(hours=12)
 TOKEN_LIMIT_PER_USER = 1

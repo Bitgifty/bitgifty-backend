@@ -5,7 +5,8 @@ from django.db import models
 from django.core import mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-from rest_framework.exceptions import ValidationError
+
+from rest_framework.exceptions import ParseError as ValidationError
 from core.utils import Blockchain
 from wallets.models import Wallet
 # Create your models here.
@@ -100,10 +101,10 @@ class Redeem(models.Model):
             try:
                 giftcard = GiftCard.objects.get(code=self.code)
             except Exception as exception:
-                raise ValidationError({"error": "giftcard not found", "detail": exception})
+                raise ValidationError("gift card not found")
 
             if giftcard.status == "used":
-                raise ValidationError({"error": "Gift card has been used"})
+                raise ValidationError("Giftcard has already been used")
 
             TATUM_API_KEY = os.getenv("TATUM_API_KEY")
             client = Blockchain(TATUM_API_KEY, os.getenv("BIN_KEY"), os.getenv("BIN_SECRET"))
