@@ -25,6 +25,8 @@ from django.conf.urls.static import static
 from dj_rest_auth.views import PasswordResetConfirmView
 from dj_rest_auth.registration.views import VerifyEmailView
 
+from accounts.views import CustomKoxLogin
+
 schema_view = get_schema_view(
    openapi.Info(
       title="Bitgifty API",
@@ -41,7 +43,9 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('auth/', include('knox.urls')),
+    path('auth/login/', CustomKoxLogin.as_view(), name='knox_login'),
+    # path('auth/', include('knox.urls')),
+    path('auth/', include('dj_rest_auth.urls')),
     path('auth/account-confirm-email/', VerifyEmailView.as_view(), name='account_email_verification_sent'),
     path('auth/password/password-reset-confirm/<uidb64>/<token>/',
         PasswordResetConfirmView.as_view(),
