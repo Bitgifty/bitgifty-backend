@@ -14,7 +14,7 @@ from wallets.models import Wallet
 
 class GiftCardFee(models.Model):
     amount = models.FloatField(default=0.0)
-    network = models.CharField(unique=True, max_length=255)
+    network = models.CharField(max_length=255)
     operation = models.CharField(max_length=255)
 
     def __str__(self):
