@@ -94,14 +94,14 @@ class Redeem(models.Model):
     def save(self, *args, **kwargs):
         try:
             try:
-                fee = GiftCardFee.objects.get(network=self.currency.title(), operation="redeem").amount
-            except Exception:
-                fee = 0.0
-            
-            try:
                 giftcard = GiftCard.objects.get(code=self.code)
             except Exception as exception:
                 raise ValidationError("gift card not found")
+
+            try:
+                fee = GiftCardFee.objects.get(network=giftcard.currency.title(), operation="redeem").amount
+            except Exception:
+                fee = 0.0
 
             if giftcard.status == "used":
                 raise ValidationError("Giftcard has already been used")
