@@ -1,12 +1,8 @@
 import os
 import requests
-import random
 import secrets
 
-import environ
 import qrcode
-
-from pathlib import Path
 
 from cryptography.fernet import Fernet
 from binance.spot import Spot

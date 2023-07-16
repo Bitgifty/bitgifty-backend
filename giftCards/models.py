@@ -1,4 +1,3 @@
-import environ
 import os
 
 from django.db import models
@@ -111,16 +110,11 @@ class Redeem(models.Model):
             client = Blockchain(TATUM_API_KEY, os.getenv("BIN_KEY"), os.getenv("BIN_SECRET"))
             wallet = Wallet.objects.get(owner=self.account, network=giftcard.currency.title())
             admin_wallet = Wallet.objects.get(owner__username="superman-houseboy", network=giftcard.currency.title())
-            amount = str(giftcard.amount)
+            amount = str(giftcard.amount - fee)
         
             client.redeem_gift_card(
                 self.code, admin_wallet.private_key, amount,
                 wallet.address, giftcard.currency, admin_wallet.address
-            )
-
-            client.redeem_gift_card(
-                self.code, wallet.private_key, fee,
-                admin_wallet.address, giftcard.currency, wallet.address
             )
     
             note = giftcard.note
