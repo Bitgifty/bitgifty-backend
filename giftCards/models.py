@@ -54,7 +54,7 @@ class GiftCard(models.Model):
                         'giftcard_mail.html',
                         {
                             'receipent_email': self.receipent_email,
-                            'sender_email': self.account.email,
+                            'sender_email': self.wallet.owner.email,
                             'code': self.code,
                             'note': self.note,
                         }
