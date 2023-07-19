@@ -26,7 +26,7 @@ class SwapSerializer(serializers.Serializer):
         except Wallet.DoesNotExist:
             raise serializers.ValidationError({"error": "Exchange not supported"})
         
-        swap_table = SwapTable.objects.get(first_currency=self.swap_from, second_currency=self.swap_to)
+        swap_table = SwapTable.objects.get(buy=self.swap_from, using=self.swap_to)
 
         swap = Swap(
             swap_from,

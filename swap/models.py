@@ -1,4 +1,5 @@
 import os
+import requests
 
 from django.db import models
 
@@ -9,12 +10,28 @@ from wallets.models import Wallet
 # Create your models here.
 
 class SwapTable(models.Model):
-    first_currency = models.CharField(max_length=255)
-    second_currency = models.CharField(max_length=255)
+    buy = models.CharField(max_length=255)
+    using = models.CharField(max_length=255)
     factor = models.FloatField(default=1.0)
+    profit = models.FloatField(default=0.0)
+
+    def update_factor(self):
+        url = f"https://api.coingecko.com/api/v3/simple/price"
+        params = {
+            "ids": self.buy.lower(),
+            "vs_currencies":self.using.lower()
+        }
+        r = requests.get(url, params=params)
+        data = r.json()
+        return data
+    
+    def save(self, *args, **kwargs):
+        self.factor = self.update_factor + self.profit
+        return super(SwapTable, self).save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.first_currency}"
+        return f"{self.using} > {self.buy}"
+    
     
 
 class Swap(models.Model):
