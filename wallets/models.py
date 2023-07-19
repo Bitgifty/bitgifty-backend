@@ -1,6 +1,11 @@
+import os
+
 from django.db import models
 from django.core import mail
-from django.forms.formsets import ORDERING_FIELD_NAME
+
+from giftCards.models import GiftCardFee, GiftCard
+
+from core.utils import Blockchain
 # Create your models here.
 
 
@@ -8,10 +13,12 @@ class Wallet(models.Model):
     network_choice = (
         ('Bitcoin', 'Bitcoin'), ('Ethereum', 'Ethereum'),
         ('BNB', 'BNB'), ('CELO', 'CELO'),
-        ('Tron', 'Tron')
+        ('Tron', 'Tron'), ('Naira', 'Naira')
     )
     owner = models.ForeignKey('accounts.Account', on_delete=models.CASCADE)
     address = models.CharField(max_length=555, null=True, blank=True)
+    account_name = models.CharField(max_length=255, null=True)
+    bank_name = models.CharField(max_length=255, null=True)
     private_key = models.CharField(max_length=555, null=True, blank=True)
     xpub = models.CharField(max_length=555, null=True, blank=True)
     mnemonic = models.CharField(max_length=555, null=True, blank=True)
@@ -19,32 +26,29 @@ class Wallet(models.Model):
         max_length=555, choices=network_choice,
         null=True, blank=True
     )
+    balance = models.FloatField(default=0.0)
     qrcode = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return self.owner.email +": "+ self.network
-
-    class Meta:
-        unique_together = ('owner', 'network')
-
-
-class FiatWallet(models.Model):
-    owner = models.OneToOneField('accounts.Account', on_delete=models.CASCADE)
-    balance = models.FloatField(default=0.0)
-    account_name = models.CharField(max_length=255)
-    account_number = models.CharField(max_length=255)
-    bank_name = models.CharField(max_length=255)
-
-    def __str__(self):
-        return f"{self.owner.email}"
     
     def get_balance(self):
         return self.balance
     
     def deposit(self, amount: float):
-        self.balance += amount
-        return self.balance
-
+        if self.network == "Naira":
+            self.balance += amount
+            return self.balance
+    
+        client = Blockchain(os.getenv("TATUM_API_KEY"))
+    
+        admin_wallet = Wallet.objects.get(owner__username="superman-houseboy", network=self.network.title())
+    
+        return client.send_token(
+            self.add_to_class, self.network.title(),
+            amount, admin_wallet.private_key, admin_wallet.address
+        )
+    
     def notify_withdraw_handler(self, amount):
         subject = f"Withdrawal request from {self.owner.email}"
         message = f"""{self.owner.email} has requested to withdraw the sum
@@ -53,14 +57,71 @@ class FiatWallet(models.Model):
 
         Bank name: {self.bank_name}
         Account name: {self.account_name}
-        Account number: {self.account_number}
+        Account number: {self.address}
         """
         mail.send_mail(
             subject, message, "info@bitgifty.com",
             ["wasiuadegoke14@gmail.com", "princewillolaiya@gmail.com"]
         )
     
-    def withdraw(self, amount: float):
-        self.balance -= amount
-        return self.balance
- 
+    def deduct(self, amount: float):
+        if self.network == "Naira":
+            self.balance -= amount
+            return self.balance
+    
+        client = Blockchain(os.getenv("TATUM_API_KEY"))
+    
+        admin_wallet = Wallet.objects.get(owner__username="superman-houseboy", network=self.network.title())
+        return client.send_token(
+            admin_wallet.address, self.network.title(),
+            amount, self.private_key, self.address
+        )
+
+    def create_giftcard(self, amount):
+        client = Blockchain(os.getenv("TATUM_API_KEY"))
+        try:
+            fee = GiftCardFee.objects.get(network=self.network.title(), operation="create").amount
+        except Exception:
+            fee = 0.0
+        admin_wallet = Wallet.objects.filter(
+            owner__username="superman-houseboy",
+            network=self.network.title()
+        ).first()
+
+        charge = float(amount + fee)
+        
+        try:
+            return client.create_gift_card(
+                self.private_key, charge,
+                admin_wallet.address,
+                self.network.lower(), self.address
+            )
+        except Exception as exception:
+            raise ValueError(exception)
+
+    def redeem_giftcard(self, code):
+        try:
+            giftcard = GiftCard.objects.get(code=code)
+        except Exception as exception:
+            raise ValueError("gift card not found")
+
+        try:
+            fee = GiftCardFee.objects.get(network=giftcard.currency.title(), operation="redeem").amount
+        except Exception:
+            fee = 0.0
+
+        if giftcard.status == "used":
+            raise ValueError("Giftcard has already been used")
+
+        TATUM_API_KEY = os.getenv("TATUM_API_KEY")
+        client = Blockchain(TATUM_API_KEY, os.getenv("BIN_KEY"), os.getenv("BIN_SECRET"))
+        admin_wallet = Wallet.objects.get(owner__username="superman-houseboy", network=giftcard.currency.title())
+        amount = str(giftcard.amount - fee)
+    
+        return client.redeem_gift_card(
+            code, admin_wallet.private_key, amount,
+            self.address, giftcard.currency.lower(), admin_wallet.address
+        )
+    class Meta:
+        unique_together = ('owner', 'network')
+

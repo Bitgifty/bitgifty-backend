@@ -12,11 +12,11 @@ class GiftCardSerializer(serializers.ModelSerializer):
     class Meta:
         model = GiftCard
         fields = "__all__"
-        read_only_fields = ["code", "account"]
+        read_only_fields = ["code", "wallet"]
 
 
 class RedeemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Redeem
         fields = "__all__"
-        read_only_fields = ["account",]
+        read_only_fields = ["wallet",]

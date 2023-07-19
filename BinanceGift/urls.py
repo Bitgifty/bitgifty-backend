@@ -51,11 +51,13 @@ urlpatterns = [
         PasswordResetConfirmView.as_view(),
         name='password_reset_confirm'
     ),  
+    path('', include('transactions.urls')),
+    
     path('auth/registration/', include('dj_rest_auth.registration.urls')),
 
     path('gift_cards/', include('giftCards.urls')),
 
-    path('', include('transactions.urls')),
+    path('swap/', include('swap.urls')),
 
     path('wallets/', include('wallets.urls')),
 

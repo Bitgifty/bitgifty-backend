@@ -312,3 +312,11 @@ class Blockchain(object):
             os.remove(f'{address}.png')
         except Exception as exception:
             raise ValueError(str(exception))
+
+    def initiate_swap(self, swap_from, swap_to, swap_amount):
+        try:
+            swap_from.deduct(swap_amount)
+            swap_to.deposit(swap_amount)
+        except Exception as exception:
+            raise ValueError(exception)
+        return "success"
