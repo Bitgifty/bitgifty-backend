@@ -25,7 +25,7 @@ class TransactionListAPIView(generics.GenericAPIView):
     queryset = Transaction.objects.all()
     renderer_classes = [JSONRenderer, BrowsableAPIRenderer, OpenAPIRenderer, SwaggerUIRenderer]
 
-    @swagger_auto_schema(request_body=serializers.TransactionSerializer)
+    @swagger_auto_schema(query_serializer=serializers.TransactionSerializer)
     def get(self, request, network):
         """Confirms if a payment is legit"""
         # try:
