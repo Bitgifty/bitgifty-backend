@@ -32,7 +32,7 @@ class GiftCardAPIView(ListCreateAPIView):
         )
         kwargs['wallet'] = wallet
         try:
-            wallet.create_giftcard(serializer.validated_data.get("amount"))
+            kwargs['code'] = wallet.create_giftcard(serializer.validated_data.get("amount"))
         except Exception as exception:
             raise serializers.ValidationError(exception)
         serializer.save(**kwargs)

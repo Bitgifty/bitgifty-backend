@@ -48,7 +48,6 @@ class GiftCard(models.Model):
     def save(self, *args, **kwargs):
         try:
             if self._state.adding:
-                self.code = self.wallet.create_giftcard(self.amount)
                 if self.receipent_email:
                     subject = "Gift Card from BitGifty"
                     html_message = render_to_string(
