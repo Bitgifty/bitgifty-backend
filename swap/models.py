@@ -16,17 +16,28 @@ class SwapTable(models.Model):
     profit = models.FloatField(default=0.0)
 
     def update_factor(self):
-        url = f"https://api.coingecko.com/api/v3/simple/price"
+        url = "https://api.coingecko.com/api/v3/simple/price"
+        buy = self.buy
+        using = self.using
+        
+        if buy == "naira":
+            buy = "NGN"
+
+        if using == "naira":
+            using = "NGN"
         params = {
-            "ids": self.buy.lower(),
-            "vs_currencies":self.using.lower()
+            "ids": buy.lower(),
+            "vs_currencies": using.lower()
         }
         r = requests.get(url, params=params)
         data = r.json()
-        return data
+        return data[buy.lower()][using.lower()]
+        # return data[using.lower()][buy.lower()]
     
     def save(self, *args, **kwargs):
-        self.factor = self.update_factor + self.profit
+        factor = self.update_factor()
+        print(factor)
+        self.factor = factor + self.profit
         return super(SwapTable, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -43,10 +54,10 @@ class Swap(models.Model):
     def swap_currency(self):
         TATUM_API_KEY = os.getenv("TATUM_API_KEY")
         client = Blockchain(TATUM_API_KEY)
-
+        print(self.swap_table.factor)
         return client.initiate_swap(
-            self.swap_from, self.swap_from_amount*self.swap_table.factor,
-            self.swap_to
+            swap_to=self.swap_to, swap_amount=float(self.swap_from_amount) * float(self.swap_table.factor),
+            swap_from=self.swap_from
         )
 
     def save(self, *args, **kwargs):

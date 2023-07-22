@@ -9,6 +9,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.exceptions import ParseError as ValidationError
+from urllib3.contrib.appengine import HTTPResponse
 
 from .serializers import WalletSerializer
 from .models import Wallet
@@ -34,7 +35,8 @@ class WalletAPIView(generics.GenericAPIView):
                 "bitcoin": "bitcoin",
                 "celo": "celo",
                 "ethereum": "ethereum",
-                "tron": "tron"
+                "tron": "tron",
+                "naira": "naira"
             }
             user = request.user
             wallets = Wallet.objects.filter(owner=user)
@@ -42,14 +44,21 @@ class WalletAPIView(generics.GenericAPIView):
             for wallet in wallets:
                 network_key = wallet.network.lower()
                 network = network_mapping[network_key]
-                client = Blockchain(os.getenv("TATUM_API_KEY"), os.getenv("BIN_KEY"), os.getenv("BIN_SECRET"))
-                wallet_info = client.get_wallet_info(wallet.address, network)
-                
-                wallet_list[wallet.network] = {
-                    'address': wallet.address,
-                    'info': wallet_info,
-                    'qrcode': wallet.qrcode,
-                }
+                if wallet.network == network:
+                    wallet_list[network] = {
+                        'address': wallet.address,
+                        'balance': wallet.balance,
+                        'qrcode': wallet.qrcode,
+                    }
+                else:
+                    client = Blockchain(os.getenv("TATUM_API_KEY"), os.getenv("BIN_KEY"), os.getenv("BIN_SECRET"))
+                    wallet_info = client.get_wallet_info(wallet.address, network)
+                    
+                    wallet_list[wallet.network] = {
+                        'address': wallet.address,
+                        'info': wallet_info,
+                        'qrcode': wallet.qrcode,
+                    }
             return Response(wallet_list, status=status.HTTP_200_OK)
         except Exception as exception:
             raise ValidationError({"error": exception})
@@ -169,3 +178,16 @@ def recreate_qr(request):
         wallet.save()
     
     return HttpResponse("success")
+
+def create_naira_wallet(request):
+    accounts = Account.objects.all().count()
+    naira = Wallet.objects.filter(network="naira").count()
+    resp = {"accounts": accounts, "naira": naira}
+    print(resp)
+    # for account in accounts:    
+    #     wallet = Wallet(
+    #         owner=account,
+    #         network="naira",
+    #     )
+    #     wallet.save()
+    return HTTPResponse(resp)

@@ -36,7 +36,7 @@ class Wallet(models.Model):
         return self.balance
     
     def deposit(self, amount: float):
-        if self.network == "Naira":
+        if self.network == "naira":
             self.balance += amount
             return self.balance
     
@@ -65,7 +65,9 @@ class Wallet(models.Model):
         )
     
     def deduct(self, amount: float):
-        if self.network == "Naira":
+        if self.network == "naira":
+            if self.balance < amount:
+                raise ValueError("Insufficient balance") 
             self.balance -= amount
             return self.balance
     
@@ -102,12 +104,12 @@ class Wallet(models.Model):
     def redeem_giftcard(self, code):
         try:
             giftcard = GiftCard.objects.get(code=code)
-        except Exception as exception:
+        except GiftCard.DoesNotExist:
             raise ValueError("gift card not found")
 
         try:
             fee = GiftCardFee.objects.get(network=giftcard.currency.title(), operation="redeem").amount
-        except Exception:
+        except GiftCardFee.DoesNotExist:
             fee = 0.0
 
         if giftcard.status == "used":

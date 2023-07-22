@@ -315,6 +315,7 @@ class Blockchain(object):
 
     def initiate_swap(self, swap_from, swap_to, swap_amount):
         try:
+            print("swap_from: ", swap_from)
             swap_from.deduct(swap_amount)
             swap_to.deposit(swap_amount)
         except Exception as exception:

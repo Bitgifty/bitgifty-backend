@@ -6,3 +6,4 @@ staticfiles/*
 static/*
 !staticfiles/.gitkeep
 !static/.gitkeep
+.null-ls*
