@@ -65,17 +65,22 @@ class WithdrawAPIView(generics.GenericAPIView):
             
             try:
                 wallet = Wallet.objects.get(owner=user, network=network)
-            except Exception:
+            except Wallet.DoesNotExist:
                 raise ValidationError("Sender wallet not found")
-            private_key = wallet.private_key
-            mnemonic = client.decrypt_crendentails(private_key)
-            try:
-                response = client.send_token(receiver_address, network.lower(), str(amount), mnemonic, wallet.address)
-            except Exception as exception:
-                raise ValidationError(str(exception))
-            if response.get("txId"):
-                return Response(response)
+
+            if network == "naira":
+                wallet.deduct(float(amount))
+                wallet.notify_withdraw_handler(float(amount))
             else:
-                raise ValidationError(response)
+                private_key = wallet.private_key
+                mnemonic = client.decrypt_crendentails(private_key)
+                try:
+                    response = client.send_token(receiver_address, network.lower(), str(amount), mnemonic, wallet.address)
+                except Exception as exception:
+                    raise ValidationError(str(exception))
+                if response.get("txId"):
+                    return Response(response)
+                else:
+                    raise ValidationError(response)
         else:
             raise ValidationError({"error": "something went wrong"})
