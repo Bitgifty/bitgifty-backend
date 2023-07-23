@@ -31,12 +31,14 @@ class SwapTable(models.Model):
         }
         r = requests.get(url, params=params)
         data = r.json()
-        return data[buy.lower()][using.lower()]
+        try:
+            return data[buy.lower()][using.lower()]
+        except KeyError:
+            return 10.0
         # return data[using.lower()][buy.lower()]
     
     def save(self, *args, **kwargs):
         factor = self.update_factor()
-        print(factor)
         self.factor = factor + self.profit
         return super(SwapTable, self).save(*args, **kwargs)
 
