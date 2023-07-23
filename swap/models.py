@@ -32,7 +32,7 @@ class SwapTable(models.Model):
         r = requests.get(url, params=params)
         data = r.json()
         try:
-            return data[buy.lower()]["ngn"]
+            return data[using.lower()]["ngn"]
         except KeyError:
             return self.factor
     
