@@ -26,20 +26,18 @@ class SwapTable(models.Model):
         if using == "naira":
             using = "NGN"
         params = {
-            "ids": buy.lower(),
-            "vs_currencies": using.lower()
+            "ids": using.lower(),
+            "vs_currencies": "ngn"
         }
         r = requests.get(url, params=params)
         data = r.json()
         try:
-            return data[buy.lower()][using.lower()]
+            return data[buy.lower()]["ngn"]
         except KeyError:
-            return 10.0
-        # return data[using.lower()][buy.lower()]
+            return self.factor
     
     def save(self, *args, **kwargs):
-        factor = self.update_factor()
-        self.factor = factor + self.profit
+        self.factor = self.update_factor()
         return super(SwapTable, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -49,16 +47,15 @@ class SwapTable(models.Model):
 
 class Swap(models.Model):
     swap_from = models.ForeignKey(Wallet, on_delete=models.SET_NULL, related_name="swap_from", null=True)
-    swap_from_amount = models.FloatField(default=0.0)
+    swap_amount = models.FloatField(default=0.0)
     swap_to = models.ForeignKey(Wallet, on_delete=models.SET_NULL, related_name="swap_to", null=True)
-    swap_table = models.OneToOneField(SwapTable, on_delete=models.SET_NULL, null=True)
+    swap_table = models.ForeignKey(SwapTable, on_delete=models.SET_NULL, null=True)
 
     def swap_currency(self):
         TATUM_API_KEY = os.getenv("TATUM_API_KEY")
         client = Blockchain(TATUM_API_KEY)
-        print(self.swap_table.factor)
         return client.initiate_swap(
-            swap_to=self.swap_to, swap_amount=float(self.swap_from_amount) * float(self.swap_table.factor),
+            swap_to=self.swap_to, swap_amount=float(self.swap_amount), factor=float(self.swap_table.factor),
             swap_from=self.swap_from
         )
 

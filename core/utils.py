@@ -313,11 +313,10 @@ class Blockchain(object):
         except Exception as exception:
             raise ValueError(str(exception))
 
-    def initiate_swap(self, swap_from, swap_to, swap_amount):
+    def initiate_swap(self, swap_from, swap_to, swap_amount, factor):
         try:
-            print("swap_from: ", swap_from)
             swap_from.deduct(swap_amount)
-            swap_to.deposit(swap_amount)
+            swap_to.deposit(factor)
         except Exception as exception:
             raise ValueError(exception)
         return "success"

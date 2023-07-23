@@ -107,7 +107,6 @@ def recreate_wallet(request):
                     pass
 
                 try:
-                    print(i)
                     credentials = client.generate_bnb_wallet()
                     wallet_address = credentials["address"]
                     private_key = credentials["privateKey"]
@@ -205,7 +204,6 @@ def create_naira_wallet(request):
     accounts = Account.objects.all().count()
     naira = Wallet.objects.filter(network="naira").count()
     resp = {"accounts": accounts, "naira": naira}
-    print(resp)
     # for account in accounts:    
     #     wallet = Wallet(
     #         owner=account,

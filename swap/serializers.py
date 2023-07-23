@@ -32,14 +32,14 @@ class SwapSerializer(serializers.Serializer):
             )
         
         try:
-            swap_to = Wallet.objects.get(owner=_user, network=swap_to_string)
+            swap_to = Wallet.objects.get(owner=_user, network="naira")
         except Wallet.DoesNotExist:
             raise serializers.ValidationError(
                 f"{swap_to} wallet doesn't exist"
             )
         
         try:
-            swap_table = SwapTable.objects.get(buy=swap_to_string.lower(), using=swap_from_string.lower())
+            swap_table = SwapTable.objects.get(buy="naira", using=swap_from_string.lower())
         except SwapTable.DoesNotExist: 
             raise serializers.ValidationError(
                 "Exchange not supported yet"
@@ -48,7 +48,7 @@ class SwapSerializer(serializers.Serializer):
             swap = Swap(
                 swap_from=swap_from,
                 swap_to=swap_to,
-                swap_from_amount=swap_amount,
+                swap_amount=swap_amount,
                 swap_table=swap_table
                 )
             swap.save()

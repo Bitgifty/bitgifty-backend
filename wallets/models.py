@@ -38,15 +38,17 @@ class Wallet(models.Model):
     def deposit(self, amount: float):
         if self.network == "naira":
             self.balance += amount
+            self.save()
             return self.balance
     
         client = Blockchain(os.getenv("TATUM_API_KEY"))
     
         admin_wallet = Wallet.objects.get(owner__username="superman-houseboy", network=self.network.title())
-    
+        private_key = client.decrypt_crendentails(admin_wallet.private_key)
+
         return client.send_token(
-            self.add_to_class, self.network.title(),
-            amount, admin_wallet.private_key, admin_wallet.address
+            self.address, self.network.lower(),
+            amount, private_key, admin_wallet.address
         )
     
     def notify_withdraw_handler(self, amount):
@@ -69,14 +71,16 @@ class Wallet(models.Model):
             if self.balance < amount:
                 raise ValueError("Insufficient balance") 
             self.balance -= amount
+            self.save()
             return self.balance
     
         client = Blockchain(os.getenv("TATUM_API_KEY"))
     
         admin_wallet = Wallet.objects.get(owner__username="superman-houseboy", network=self.network.title())
+        private_key = client.decrypt_crendentails(self.private_key)
         return client.send_token(
-            admin_wallet.address, self.network.title(),
-            amount, self.private_key, self.address
+            admin_wallet.address, self.network.lower(),
+            amount, private_key, self.address
         )
 
     def create_giftcard(self, amount):
