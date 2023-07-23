@@ -8,3 +8,12 @@ class WalletSerializer(serializers.ModelSerializer):
         model = Wallet
         exclude = ("private_key", "xpub", "mnemonic")
         read_only_fields = ("address", "owner", "qrcode")
+
+
+class WalletUpdateSerializer(serializers.ModelSerializer):
+    account_number = serializers.CharField(source='address')
+
+    class Meta:
+        model = Wallet
+        read_only_fields = ("qrcode", "balance")
+        exclude = ("private_key", "xpub", "mnemonic", "address", "owner", "network")

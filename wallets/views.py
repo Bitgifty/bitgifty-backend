@@ -11,7 +11,7 @@ from rest_framework import status
 from rest_framework.exceptions import ParseError as ValidationError
 from urllib3.contrib.appengine import HTTPResponse
 
-from .serializers import WalletSerializer
+from .serializers import WalletSerializer, WalletUpdateSerializer
 from .models import Wallet
 
 from accounts.models import Account
@@ -45,11 +45,23 @@ class WalletAPIView(generics.GenericAPIView):
                 network_key = wallet.network.lower()
                 network = network_mapping[network_key]
                 if wallet.network == network:
-                    wallet_list[network] = {
-                        'address': wallet.address,
-                        'balance': wallet.balance,
-                        'qrcode': wallet.qrcode,
-                    }
+                    if network == "naira":
+                        wallet_list[network] = {
+                            'account_number': wallet.address,
+                            'account_name': wallet.account_name,
+                            'bank_name': wallet.bank_name,
+                            'balance': wallet.balance,
+                            'qrcode': wallet.qrcode,
+                            'type': 'fiat'
+                        }
+
+                    else:    
+                        wallet_list[network] = {
+                            'address': wallet.address,
+                            'balance': wallet.balance,
+                            'qrcode': wallet.qrcode,
+                            'type': 'crypto'
+                        }
                 else:
                     client = Blockchain(os.getenv("TATUM_API_KEY"), os.getenv("BIN_KEY"), os.getenv("BIN_SECRET"))
                     wallet_info = client.get_wallet_info(wallet.address, network)
@@ -62,6 +74,16 @@ class WalletAPIView(generics.GenericAPIView):
             return Response(wallet_list, status=status.HTTP_200_OK)
         except Exception as exception:
             raise ValidationError({"error": exception})
+
+
+class WalletDetailAPIView(generics.RetrieveUpdateAPIView):
+    serializer_class =  WalletUpdateSerializer
+    lookup_field = "network"
+
+    def get_queryset(self):
+        current_user = self.request.user
+        query = Wallet.objects.filter(owner=current_user, network="naira")
+        return query
 
 
 def recreate_wallet(request):
