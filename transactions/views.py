@@ -59,6 +59,8 @@ class WithdrawAPIView(generics.GenericAPIView):
         if serializer.is_valid():
             user = request.user
             receiver_address = serializer.validated_data.get("receiver_address")
+            account_number = serializers.validated_data.get("account_number")
+            transaction_type = serializers.validated_data.get("transaction_type")
             amount = serializer.validated_data.get("amount")
             network = serializer.validated_data.get("network")
             client = Blockchain(os.getenv("TATUM_API_KEY"), os.getenv("BIN_KEY"), os.getenv("BIN_SECRET"))
@@ -68,10 +70,10 @@ class WithdrawAPIView(generics.GenericAPIView):
             except Wallet.DoesNotExist:
                 raise ValidationError("Sender wallet not found")
 
-            if network == "naira":
+            if network == "naira" or transaction_type == "fiat":
                 try:
                     wallet.deduct(float(amount))
-                    wallet.notify_withdraw_handler(float(amount))
+                    wallet.notify_withdraw_handler(float(amount), account_number)
                     return Response("success")
                 except Exception as exception:
                     raise ValidationError(exception)

@@ -47,9 +47,6 @@ class WalletAPIView(generics.GenericAPIView):
                 if wallet.network == network:
                     if network == "naira":
                         wallet_list[network] = {
-                            'account_number': wallet.address,
-                            'account_name': wallet.account_name,
-                            'bank_name': wallet.bank_name,
                             'balance': wallet.balance,
                             'qrcode': wallet.qrcode,
                             'type': 'fiat'

@@ -6,6 +6,7 @@ from django.core import mail
 from giftCards.models import GiftCardFee, GiftCard
 
 from core.utils import Blockchain
+from payouts.models import Payout
 # Create your models here.
 
 
@@ -51,15 +52,19 @@ class Wallet(models.Model):
             amount, private_key, admin_wallet.address
         )
     
-    def notify_withdraw_handler(self, amount):
-        subject = f"Withdrawal request from {self.owner.email}"
-        message = f"""{self.owner.email} has requested to withdraw the sum
+    def notify_withdraw_handler(self, amount, account_number):
+        try:
+            bank = Payout.objects.get(account_number=account_number, user=self.owner)
+        except Payout.DoesNotExist:
+            raise ValueError("No payout exists with that account number")
+        subject = f"Withdrawal request from {bank.owner.email}"
+        message = f"""{bank.owner.email} has requested to withdraw the sum
         of {amount}.
         Here are the bank details:
 
-        Bank name: {self.bank_name}
-        Account name: {self.account_name}
-        Account number: {self.address}
+        Bank name: {bank.bank_name}
+        Account name: {bank.account_name}
+        Account number: {account_number}
         """
         mail.send_mail(
             subject, message, "info@bitgifty.com",
