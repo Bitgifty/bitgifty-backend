@@ -13,6 +13,10 @@ class PayoutListCreateAPIView(generics.ListCreateAPIView):
     def get_queryset(self):
         payout = Payout.objects.filter(user=self.request.user)
         return payout
+    
+    def perform_create(self, serializer, **kwargs):
+        kwargs["user"] = self.request.user
+        serializer.save(**kwargs)
 
 
 class PayoutDetailAPIView(generics.RetrieveUpdateDestroyAPIView):

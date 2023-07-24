@@ -59,6 +59,8 @@ urlpatterns = [
     
     path('payouts/', include('payouts.urls')),
 
+    path('payouts/', include('payouts.urls')),
+
     path('swap/', include('swap.urls')),
 
     path('wallets/', include('wallets.urls')),
