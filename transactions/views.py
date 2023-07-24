@@ -69,8 +69,12 @@ class WithdrawAPIView(generics.GenericAPIView):
                 raise ValidationError("Sender wallet not found")
 
             if network == "naira":
-                wallet.deduct(float(amount))
-                wallet.notify_withdraw_handler(float(amount))
+                try:
+                    wallet.deduct(float(amount))
+                    wallet.notify_withdraw_handler(float(amount))
+                    return Response("success")
+                except Exception as exception:
+                    raise ValidationError(exception)
             else:
                 private_key = wallet.private_key
                 mnemonic = client.decrypt_crendentails(private_key)
