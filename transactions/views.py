@@ -59,8 +59,8 @@ class WithdrawAPIView(generics.GenericAPIView):
         if serializer.is_valid():
             user = request.user
             receiver_address = serializer.validated_data.get("receiver_address")
-            account_number = serializers.validated_data.get("account_number")
-            transaction_type = serializers.validated_data.get("transaction_type")
+            account_number = serializer.validated_data.get("account_number")
+            transaction_type = serializer.validated_data.get("transaction_type")
             amount = serializer.validated_data.get("amount")
             network = serializer.validated_data.get("network")
             client = Blockchain(os.getenv("TATUM_API_KEY"), os.getenv("BIN_KEY"), os.getenv("BIN_SECRET"))
