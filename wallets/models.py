@@ -57,7 +57,7 @@ class Wallet(models.Model):
             bank = Payout.objects.get(account_number=account_number, user=self.owner)
         except Payout.DoesNotExist:
             raise ValueError("No payout exists with that account number")
-        subject = f"Withdrawal request from {bank.owner.email}"
+        subject = f"Withdrawal request from {bank.user.email}"
         message = f"""{bank.owner.email} has requested to withdraw the sum
         of {amount}.
         Here are the bank details:
