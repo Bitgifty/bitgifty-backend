@@ -20,12 +20,8 @@ class Transaction(models.Model):
     def save(self, *args, **kwargs):
         if self.status == "confirmed" and self.currency_type == "fiat":
             subject = "Withdrawal request processed"
-            message = f"""
-            Your request to withdraw the sum of {self.amount}
-            has been processed successfully.
-            """
             html_message = render_to_string(
-            'giftcardtemplate.html',
+            'withdrawal_processed.html',
                 {
                     'receipent_email': self.user.email,
                     'amount': self.amount,
