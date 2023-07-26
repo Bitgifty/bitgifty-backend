@@ -55,7 +55,8 @@ class GiftCard(models.Model):
                         note = self.note
                     html_message = render_to_string(
                         'giftcardtemplate.html',
-                        {
+                        {   
+                            'image': self.image,
                             'receipent_email': self.receipent_email,
                             'sender_email': self.wallet.owner.email,
                             'code': self.code,

@@ -89,6 +89,7 @@
                     <p style="font-size: 14px">
                       Congratulations! <br /><br />
                       You've been gifted a Crypto Giftcard! by {{ sender_email }}<br /><br />
+                      The code is {{ code }}
                       🎉🪙 Redeem it now and start exploring the world of
                       digital currency.<br /><br />
                       Happy crypto adventures ahead!
@@ -96,7 +97,7 @@
                     <div
                       style="
                         width: 100%;
-                        background-image: url(https://res.cloudinary.com/diujbzu4n/image/upload/v1690357546/images/19425932-min_y0jmge.jpg);
+                        background-image: url("{{ image }}");
                         height: 200px;
                         background-size: contain;
                         border-radius: 10px;
