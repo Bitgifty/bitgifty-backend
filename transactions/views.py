@@ -20,6 +20,14 @@ from drf_yasg.utils import swagger_auto_schema
 
 # Create your views here.
 
+
+class FiatTransactionListAPIView(generics.ListAPIView):
+    serializer_class = serializers.TransactionSerializer
+    def get_queryset(self):
+        query = Transaction.objects.filter(user=self.request.user)
+        return query
+
+
 class TransactionListAPIView(generics.GenericAPIView):
     serializer_class = serializers.TransactionSerializer
     queryset = Transaction.objects.all()
@@ -73,7 +81,13 @@ class WithdrawAPIView(generics.GenericAPIView):
             if network == "naira" or transaction_type == "fiat":
                 try:
                     wallet.deduct(float(amount))
+                    Transaction.objects.create(
+                        user=user,
+                        amount=amount,
+                        status="pending"
+                    )
                     wallet.notify_withdraw_handler(float(amount), account_number)
+
                     return Response("success")
                 except Exception as exception:
                     raise ValidationError(exception)
