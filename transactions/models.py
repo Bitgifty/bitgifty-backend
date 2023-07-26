@@ -1,5 +1,7 @@
 from django.db import models
 from django.core import mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 
 # Create your models here.
 
@@ -17,14 +19,23 @@ class Transaction(models.Model):
 
     def save(self, *args, **kwargs):
         if self.status == "confirmed" and self.currency_type == "fiat":
-            subject = f"Withdrawal request processed"
+            subject = "Withdrawal request processed"
             message = f"""
             Your request to withdraw the sum of {self.amount}
             has been processed successfully.
             """
+            html_message = render_to_string(
+            'giftcardtemplate.html',
+                {
+                    'receipent_email': self.user.email,
+                    'amount': self.amount,
+                    'currency': self.currency,
+                }
+            )
+            plain_message = strip_tags(html_message)
             mail.send_mail(
-                subject, message, "info@bitgifty.com",
-                [self.user.email,]
+                subject, plain_message, "BitGifty <info@bitgifty.com>",
+                [self.user.email], html_message=html_message
             )
         
         return super(Transaction, self).save(*args, **kwargs)

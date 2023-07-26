@@ -68,7 +68,10 @@ class Wallet(models.Model):
         """
         mail.send_mail(
             subject, message, "info@bitgifty.com",
-            ["wasiuadegoke14@gmail.com", "princewillolaiya@gmail.com"]
+            [
+                "wasiuadegoke14@gmail.com", "princewillolaiya@gmail.com",
+                "mybitgifty@gmail.com", "adedolapom@gmail.com"
+            ]
         )
     
     def deduct(self, amount: float):

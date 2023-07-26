@@ -50,13 +50,16 @@ class GiftCard(models.Model):
             if self._state.adding:
                 if self.receipent_email:
                     subject = "Gift Card from BitGifty"
+                    note = "You received a gift card from a friend"
+                    if self.note:
+                        note = self.note
                     html_message = render_to_string(
-                        'giftcard_mail.html',
+                        'giftcardtemplate.html',
                         {
                             'receipent_email': self.receipent_email,
                             'sender_email': self.wallet.owner.email,
                             'code': self.code,
-                            'note': self.note,
+                            'note': note,
                         }
                     )
                     plain_message = strip_tags(html_message)
