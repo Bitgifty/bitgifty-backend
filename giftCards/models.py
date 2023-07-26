@@ -56,7 +56,7 @@ class GiftCard(models.Model):
                     html_message = render_to_string(
                         'giftcardtemplate.html',
                         {   
-                            'image': self.image,
+                            'image': self.image.link,
                             'receipent_email': self.receipent_email,
                             'sender_email': self.wallet.owner.email,
                             'code': self.code,
