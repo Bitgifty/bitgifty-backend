@@ -18,10 +18,31 @@ class USDTNaira(models.Model):
 
 
 class USDTPrice(models.Model):
+    coin = models.CharField(max_length=255, null=True)
     price = models.FloatField(default=0.0)
 
     def __str__(self) -> str:
-        return "usdt > naira"
+        return f"{self.coin} > naira"
+
+    def get_rate(self, coin):
+        request = requests.get(f"https://api.binance.com/api/v3/avgPrice?symbol={coin}USDT")
+        data = request.json()
+        try:
+            price = data["price"]
+            return price
+        except KeyError:
+            raise ValueError("Price not found")
+
+    def save(self, *args, **kwargs):
+        coin = {
+            "tron": "TRX",
+            "bnb": "BNB",
+            "bitcoin": "BTC",
+            "celo": "CELO",
+            "ethereum": "ETH"
+        }
+        self.price = self.get_rate(coin[self.coin.lower()])
+        return super(USDTPrice, self).save(*args, **kwargs)
 
 class SwapTable(models.Model):
     buy = models.CharField(max_length=255)
@@ -50,27 +71,6 @@ class SwapTable(models.Model):
             return data[using.lower()]["ngn"]
         except KeyError:
             return self.factor
-
-    def get_rate(self, coin):
-        request = requests.get(f"https://api.binance.com/api/v3/avgPrice?symbol={coin}USDT")
-        data = request.json()
-        try:
-            price = data["price"]
-            return price
-        except KeyError:
-            raise ValueError("Price not found")
-
-    def save(self, *args, **kwargs):
-        coin = {
-            "tron": "TRX",
-            "bnb": "BNB",
-            "bitcoin": "BTC",
-            "celo": "CELO",
-            "ethereum": "ETH"
-        }
-        self.usd_price.price = self.get_rate(coin[self.using.lower()])
-        self.usd_price.save()
-        return super(SwapTable, self).save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.using} > {self.buy}"

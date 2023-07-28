@@ -1,9 +1,9 @@
 from django.shortcuts import render
 
-from rest_framework import generics, response
+from rest_framework import generics, response, views, exceptions
 
 from .serializers import SwapSerializer
-from .models import Swap
+from .models import Swap, SwapTable
 
 # Create your views here.
 
@@ -22,3 +22,13 @@ class SwapAPIView(generics.ListCreateAPIView):
 
         serializer = self.get_serializer(queryset, many=True)
         return response.Response(serializer.data)
+
+
+class SwapRateAPIView(views.APIView):
+    def get(self, request, using):
+        try:
+            query = SwapTable.objects.get(buy="naira", using=using)
+            rate = query.naira_factor.price * query.usd_price.price
+        except SwapTable.DoesNotExist:
+            raise exceptions.ValidationError("Swap not supported")
+        return response.Response(rate)
