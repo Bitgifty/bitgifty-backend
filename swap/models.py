@@ -9,10 +9,25 @@ from wallets.models import Wallet
 
 # Create your models here.
 
+
+class USDTNaira(models.Model):
+    price = models.FloatField(default=0.0)
+
+    def __str__(self) -> str:
+        return "usdt > naira"
+
+
+class USDTPrice(models.Model):
+    price = models.FloatField(default=0.0)
+
+    def __str__(self) -> str:
+        return "usdt > naira"
+
 class SwapTable(models.Model):
     buy = models.CharField(max_length=255)
     using = models.CharField(max_length=255)
-    factor = models.FloatField(default=1.0)
+    naira_factor = models.ForeignKey(USDTNaira, on_delete=models.CASCADE, null=True)
+    usd_price = models.ForeignKey(USDTPrice, on_delete=models.CASCADE, null=True)
     profit = models.FloatField(default=0.0)
 
     def update_factor(self):
@@ -35,9 +50,25 @@ class SwapTable(models.Model):
             return data[using.lower()]["ngn"]
         except KeyError:
             return self.factor
-    
+
+    def get_rate(self, coin):
+        request = requests.get(f"https://api.binance.com/api/v3/avgPrice?symbol={coin}USDT")
+        data = request.json()
+        try:
+            price = data["price"]
+            return price
+        except KeyError:
+            raise ValueError("Price not found")
+
     def save(self, *args, **kwargs):
-        self.factor = self.update_factor()
+        coin = {
+            "tron": "TRX",
+            "bitcoin": "BTC",
+            "celo": "CELO",
+            "ethereum": "ETH"
+        }
+        self.usd_price.price = self.get_rate(coin[self.using.lower()])
+        self.usd_price.save()
         return super(SwapTable, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -55,8 +86,8 @@ class Swap(models.Model):
         TATUM_API_KEY = os.getenv("TATUM_API_KEY")
         client = Blockchain(TATUM_API_KEY)
         return client.initiate_swap(
-            swap_to=self.swap_to, swap_amount=float(self.swap_amount), factor=float(self.swap_table.factor),
-            swap_from=self.swap_from
+            swap_to=self.swap_to, swap_amount=float(self.swap_amount), factor=float(self.swap_table.naira_factor.price),
+            swap_from=self.swap_from, usdt_price=self.swap_table.usd_price.price
         )
 
     def save(self, *args, **kwargs):

@@ -11,6 +11,7 @@ from cloudinary.uploader import upload
 from cloudinary.utils import cloudinary
 
 
+
 class Blockchain(object):
     def __init__(self, key: str, bin_key: str = None, bin_secret: str=None) -> None:
         self.key = key
@@ -313,10 +314,11 @@ class Blockchain(object):
         except Exception as exception:
             raise ValueError(str(exception))
 
-    def initiate_swap(self, swap_from, swap_to, swap_amount, factor):
+    def initiate_swap(self, swap_from, swap_to, swap_amount, factor, usdt_price):
         try:
             swap_from.deduct(swap_amount)
-            swap_to.deposit(float(factor) * float(swap_amount))
+            amount = float(factor) * float(usdt_price) * float(swap_amount)
+            swap_to.deposit(float(factor) * float(amount))
         except Exception as exception:
             raise ValueError(exception)
         return "success"

@@ -3,7 +3,6 @@ from dj_rest_auth.registration.serializers import RegisterSerializer
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from dj_rest_auth.serializers import UserDetailsSerializer, PasswordResetSerializer
 from django.contrib.auth import get_user_model, authenticate
-from knox.serializers import UserSerializer
 User = get_user_model()
 
 

@@ -63,6 +63,7 @@ class GiftCard(models.Model):
                             'note': note,
                         }
                     )
+                    
                     plain_message = strip_tags(html_message)
                     mail.send_mail(
                         subject, plain_message, "BitGifty <dev@bitgifty.com>",
