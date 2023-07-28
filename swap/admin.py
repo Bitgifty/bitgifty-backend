@@ -20,3 +20,11 @@ class SwapAdmin(admin.ModelAdmin):
         else:
             email = ""
         return email
+    
+    def released_naira(self, obj):
+       swap_amount=float(obj.swap_amount)
+       factor=float(obj.swap_table.naira_factor.price)
+       usdt_price=obj.swap_table.usd_price.price
+
+       amount = factor * usdt_price * swap_amount
+       return amount
