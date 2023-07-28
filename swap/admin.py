@@ -5,7 +5,7 @@ admin.site.register([SwapTable, USDTNaira, USDTPrice])
 
 @admin.register(Swap)
 class SwapAdmin(admin.ModelAdmin):
-    list_display = ('swap_amount', 'swap_from_wallet', 'swap_to_wallet')
+    list_display = ('swap_amount', 'swap_from_wallet', 'swap_to_wallet', 'released_naira')
 
     def swap_from_wallet(self, obj):
         if obj.swap_from:
