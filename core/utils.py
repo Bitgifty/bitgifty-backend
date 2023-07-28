@@ -318,7 +318,7 @@ class Blockchain(object):
         try:
             swap_from.deduct(swap_amount)
             amount = float(factor) * float(usdt_price) * float(swap_amount)
-            swap_to.deposit(float(factor) * float(amount))
+            swap_to.deposit(float(amount))
         except Exception as exception:
             raise ValueError(exception)
         return "success"
