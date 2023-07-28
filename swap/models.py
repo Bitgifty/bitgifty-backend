@@ -63,6 +63,7 @@ class SwapTable(models.Model):
     def save(self, *args, **kwargs):
         coin = {
             "tron": "TRX",
+            "bnb": "BNB",
             "bitcoin": "BTC",
             "celo": "CELO",
             "ethereum": "ETH"
