@@ -207,4 +207,5 @@ def create_naira_wallet(request):
     #         network="naira",
     #     )
     #     wallet.save()
-    return HTTPResponse(resp)
+    print(resp)
+    return Response(resp)

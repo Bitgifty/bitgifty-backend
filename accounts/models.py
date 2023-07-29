@@ -84,6 +84,11 @@ def update_account(sender, instance, **kwargs):
                     )
                 user_wallet.save()
             
+            naira_wallet = Wallet(
+                owner=instance,
+                network="naira"
+            )
+            naira_wallet.save()
         except Exception as exception:
             raise ValueError(exception)
         return instance.save()
