@@ -82,6 +82,7 @@ class Swap(models.Model):
     swap_amount = models.FloatField(default=0.0)
     swap_to = models.ForeignKey(Wallet, on_delete=models.SET_NULL, related_name="swap_to", null=True)
     swap_table = models.ForeignKey(SwapTable, on_delete=models.SET_NULL, null=True)
+    swap_date = models.DateTimeField(auto_now_add=True, null=True)
 
     def swap_currency(self):
         TATUM_API_KEY = os.getenv("TATUM_API_KEY")

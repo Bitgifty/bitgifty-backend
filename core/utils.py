@@ -163,7 +163,11 @@ class Blockchain(object):
 
         if check_network == "all":
             for network in selected_network:
-                response = requests.get(selected_network[network]["url"], headers=headers, params=selected_network[network].get("query"))
+                response = requests.get(
+                    selected_network[network]["url"],
+                    headers=headers,
+                    params=selected_network[network].get("query")
+                )
                 output = response.json()
                 combined_output[network] = output
             data = combined_output
@@ -290,20 +294,28 @@ class Blockchain(object):
         code = secrets.token_hex(16)
         return code
 
-    def create_gift_card(self, private_key: str, amount: str, receiver_address: str, network: str, sender_address: str) -> dict:
+    def create_gift_card(
+            self, private_key: str, amount: str,
+            receiver_address: str, network: str, sender_address: str
+        ) -> str:
         private_key = self.decrypt_crendentails(private_key)
         self.send_token(receiver_address, network, amount, private_key, sender_address)
         code = self.generate_code()
         return code
 
-    def redeem_gift_card(self, code, private_key: str, amount: str, receiver_address: str, network: str, sender_address: str) -> dict:
+    def redeem_gift_card(
+            self, code, private_key: str, amount: str,
+            receiver_address: str, network: str, sender_address: str
+        ) -> dict:
         private_key = self.decrypt_crendentails(private_key)
-        self.send_token(receiver_address, network, amount, private_key, sender_address)       
+        self.send_token(
+            receiver_address, network, amount, private_key, sender_address)       
         return code
 
-    def create_qrcode(self, address: str) -> dict:
+    def create_qrcode(self, address: str) -> str:
         qrcode_img = qrcode.make(address)
         qrcode_img.save(f'{address}.png')
+        return "success"
         
     def upload_qrcode(self, address, email):
         self.init_cloudinary()
