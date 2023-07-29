@@ -87,7 +87,7 @@ class Swap(models.Model):
     def swap_currency(self):
         TATUM_API_KEY = os.getenv("TATUM_API_KEY")
         client = Blockchain(TATUM_API_KEY)
-        usdt_price = get_rate(self.swap_from)
+        usdt_price = get_rate(self.swap_table.using)
         return client.initiate_swap(
             swap_to=self.swap_to, swap_amount=float(self.swap_amount), factor=float(self.swap_table.naira_factor.price),
             swap_from=self.swap_from, usdt_price=usdt_price

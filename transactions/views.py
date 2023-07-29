@@ -46,6 +46,8 @@ class TransactionListAPIView(generics.GenericAPIView):
             for wallet in wallets:
                 wallet_dict[wallet.network.lower()] = wallet.address
             transactions = client.get_transactions(wallet_dict, network)
+        if network == "naira":
+            transactions = Transaction.objects.filter(user=request.user)
         else:
             wallet = Wallet.objects.get(owner=user, network=network.title()) 
             wallet_dict[wallet.network.lower()] = wallet.address

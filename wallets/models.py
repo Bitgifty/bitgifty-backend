@@ -11,11 +11,6 @@ from payouts.models import Payout
 
 
 class Wallet(models.Model):
-    network_choice = (
-        ('Bitcoin', 'Bitcoin'), ('Ethereum', 'Ethereum'),
-        ('BNB', 'BNB'), ('CELO', 'CELO'),
-        ('Tron', 'Tron'), ('Naira', 'Naira')
-    )
     owner = models.ForeignKey('accounts.Account', on_delete=models.CASCADE)
     address = models.CharField(max_length=555, null=True, blank=True)
     account_name = models.CharField(max_length=255, null=True)
@@ -24,7 +19,7 @@ class Wallet(models.Model):
     xpub = models.CharField(max_length=555, null=True, blank=True)
     mnemonic = models.CharField(max_length=555, null=True, blank=True)
     network = models.CharField(
-        max_length=555, choices=network_choice,
+        max_length=555,
         null=True, blank=True
     )
     balance = models.FloatField(default=0.0)
