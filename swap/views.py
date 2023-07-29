@@ -1,3 +1,5 @@
+import math
+
 from django.shortcuts import render
 
 from rest_framework import generics, response, views, exceptions
@@ -28,7 +30,7 @@ class SwapRateAPIView(views.APIView):
     def get(self, request, using):
         try:
             query = SwapTable.objects.get(buy="naira", using=using)
-            rate = query.naira_factor.price * query.usd_price.price
+            rate = math.floor(query.naira_factor.price * query.usd_price.price)
         except SwapTable.DoesNotExist:
             raise exceptions.ValidationError("Swap not supported")
         return response.Response(rate)

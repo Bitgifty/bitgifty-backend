@@ -1,4 +1,5 @@
 import os
+import math
 import requests
 import secrets
 
@@ -317,7 +318,7 @@ class Blockchain(object):
     def initiate_swap(self, swap_from, swap_to, swap_amount, factor, usdt_price):
         try:
             swap_from.deduct(swap_amount)
-            amount = float(factor) * float(usdt_price) * float(swap_amount)
+            amount = math.floor(float(factor) * float(usdt_price) * float(swap_amount))
             swap_to.deposit(float(amount))
         except Exception as exception:
             raise ValueError(exception)
