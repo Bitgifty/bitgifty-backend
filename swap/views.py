@@ -6,6 +6,7 @@ from rest_framework import generics, response, views, exceptions
 
 from .serializers import SwapSerializer
 from .models import Swap, SwapTable
+from core.utils import get_rate
 
 # Create your views here.
 
@@ -29,8 +30,9 @@ class SwapAPIView(generics.ListCreateAPIView):
 class SwapRateAPIView(views.APIView):
     def get(self, request, using):
         try:
+            usd_price = get_rate(using)
             query = SwapTable.objects.get(buy="naira", using=using)
-            rate = math.floor(query.naira_factor.price * query.usd_price.price)
+            rate = math.floor(query.naira_factor.price * usd_price)
         except SwapTable.DoesNotExist:
             raise exceptions.ValidationError("Swap not supported")
         return response.Response(rate)

@@ -1,4 +1,5 @@
 import os
+import json
 import math
 import requests
 import secrets
@@ -12,6 +13,22 @@ from cloudinary.uploader import upload
 from cloudinary.utils import cloudinary
 
 
+
+def get_rate(coin):
+    # Opening JSON file
+    f = open('price.json')
+    
+    # returns JSON object as
+    # a dictionary
+    data = json.load(f)
+    
+    # Iterating through the json
+    # list
+    res = data[coin]
+    
+    # Closing file
+    f.close()
+    return float(res)
 
 class Blockchain(object):
     def __init__(self, key: str, bin_key: str = None, bin_secret: str=None) -> None:
