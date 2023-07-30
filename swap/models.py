@@ -3,7 +3,7 @@ import requests
 
 from django.db import models
 
-from core.utils import Blockchain, get_rate
+from core.utils import Blockchain, get_rate, get_naira_price
 
 from wallets.models import Wallet
 
@@ -88,8 +88,9 @@ class Swap(models.Model):
         TATUM_API_KEY = os.getenv("TATUM_API_KEY")
         client = Blockchain(TATUM_API_KEY)
         usdt_price = get_rate(self.swap_table.using)
+        naira_price = get_naira_price()
         return client.initiate_swap(
-            swap_to=self.swap_to, swap_amount=float(self.swap_amount), factor=float(self.swap_table.naira_factor.price),
+            swap_to=self.swap_to, swap_amount=float(self.swap_amount), factor=naira_price,
             swap_from=self.swap_from, usdt_price=usdt_price
         )
 

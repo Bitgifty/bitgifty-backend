@@ -30,6 +30,12 @@ def get_rate(coin):
     f.close()
     return float(res)
 
+def get_naira_price():
+    req = requests.get("https://api.remitano.com/api/v1/rates/ads")
+    data = req.json()
+    result = data["ng"]["usdt_bid"]
+    return float(result)
+
 class Blockchain(object):
     def __init__(self, key: str, bin_key: str = None, bin_secret: str=None) -> None:
         self.key = key
@@ -352,3 +358,6 @@ class Blockchain(object):
         except Exception as exception:
             raise ValueError(exception)
         return "success"
+
+
+get_naira_price()
