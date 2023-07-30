@@ -8,7 +8,7 @@ class SwapSerializer(serializers.Serializer):
     swap_from = serializers.CharField()
     swap_to = serializers.CharField()
     swap_amount = serializers.CharField()
-    swap_date = serializers.DateTimeField()
+    swap_date = serializers.DateTimeField(required=False)
 
     def save(self):
         swap_amount = self.validated_data["swap_amount"]
