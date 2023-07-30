@@ -7,4 +7,5 @@ static/*
 !staticfiles/.gitkeep
 !static/.gitkeep
 .null-ls*
+.github
 # price.json
