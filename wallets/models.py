@@ -64,6 +64,7 @@ class Wallet(models.Model):
                 'withdrawal_general.html',
                 {
                     "type": "fiat",
+                    "subject": subject,
                     "message": str_message,
                 }
             )
@@ -88,6 +89,7 @@ class Wallet(models.Model):
                 'withdrawal_general.html',
                 {
                     "type": "crypto",
+                    "subject": subject,
                     "message": str_message,
                 }
             )
