@@ -9,7 +9,6 @@ from giftCards.models import GiftCardFee, GiftCard
 
 from core.utils import Blockchain
 from payouts.models import Payout
-from wallets.models import Wallet
 # Create your models here.
 
 
@@ -50,7 +49,7 @@ class Wallet(models.Model):
             amount, private_key, admin_wallet.address
         )
     
-    def notify_withdraw_handler(self, amount: float, type: str, bank: Payout = None, wallet: Wallet= None, reciever_addr: str = None):
+    def notify_withdraw_handler(self, amount: float, type: str, bank: Payout = None, wallet= None, reciever_addr: str = None):
         if type == "fiat":
             subject = f"Withdrawal request from {bank.user.email}"
             str_message = f"""{bank.user.email} has requested to withdraw the sum
