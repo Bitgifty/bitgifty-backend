@@ -2,11 +2,14 @@ import os
 
 from django.db import models
 from django.core import mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 
 from giftCards.models import GiftCardFee, GiftCard
 
 from core.utils import Blockchain
 from payouts.models import Payout
+from wallets.models import Wallet
 # Create your models here.
 
 
@@ -47,27 +50,54 @@ class Wallet(models.Model):
             amount, private_key, admin_wallet.address
         )
     
-    def notify_withdraw_handler(self, amount, account_number):
-        try:
-            bank = Payout.objects.get(account_number=account_number, user=self.owner)
-        except Payout.DoesNotExist:
-            raise ValueError("No payout exists with that account number")
-        subject = f"Withdrawal request from {bank.user.email}"
-        message = f"""{bank.user.email} has requested to withdraw the sum
-        of {amount}.
-        Here are the bank details:
+    def notify_withdraw_handler(self, amount: float, type: str, bank: Payout = None, wallet: Wallet= None, reciever_addr: str = None):
+        if type == "fiat":
+            subject = f"Withdrawal request from {bank.user.email}"
+            str_message = f"""{bank.user.email} has requested to withdraw the sum
+            of {amount}.
+            Here are the bank details:
 
-        Bank name: {bank.bank_name}
-        Account name: {bank.account_name}
-        Account number: {account_number}
-        """
-        mail.send_mail(
-            subject, message, "info@bitgifty.com",
-            [
-                "wasiuadegoke14@gmail.com", "princewillolaiya@gmail.com",
-                "mybitgifty@gmail.com", "adedolapom@gmail.com"
-            ]
-        )
+            Bank name: {bank.bank_name}
+            Account name: {bank.account_name}
+            Account number: {bank.account_number}
+            """
+            html_message = render_to_string(
+                'withdrawal_general.html',
+                {
+                    "type": "fiat",
+                    "message": str_message,
+                }
+            )
+            plain_message = strip_tags(html_message)
+            mail.send_mail(
+                subject, plain_message, "info@bitgifty.com",
+                [
+                    "wasiuadegoke14@gmail.com", "princewillolaiya@gmail.com",
+                    "mybitgifty@gmail.com", "adedolapom@gmail.com"
+                ],  html_message=html_message
+            )
+        else:
+            subject = f"Withdrawal from {wallet.owner.email}"
+            str_message = f"""{wallet.owner.email} has withdrawn the sum
+            of {amount}{wallet.network.lower()}.
+            Here are the wallet details:
+
+            Wallet address: {wallet.address}
+            reciever_addr: {reciever_addr}
+            """
+            html_message = render_to_string(
+                'withdrawal_general.html',
+                {
+                    "type": "crypto",
+                    "message": str_message,
+                }
+            )
+            plain_message = strip_tags(html_message)
+            mail.send_mail(
+                subject, plain_message, "info@bitgifty.com",
+                [wallet.owner.email], html_message=html_message
+            )
+
     
     def deduct(self, amount: float):
         if self.network == "naira":

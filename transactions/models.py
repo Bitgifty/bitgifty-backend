@@ -11,6 +11,8 @@ class Transaction(models.Model):
     amount = models.FloatField(default=0.0)
     currency = models.CharField(max_length=255, default="naira")
     currency_type = models.CharField(max_length=255, default="fiat")
+    bank_name = models.CharField(max_length=255, null=True, blank=True)
+    account_name = models.CharField(max_length=255, null=True, blank=True)
     status = models.CharField(max_length=255, default='pending')
     time = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
