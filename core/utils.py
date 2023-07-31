@@ -360,4 +360,3 @@ class Blockchain(object):
         return "success"
 
 
-get_naira_price()
