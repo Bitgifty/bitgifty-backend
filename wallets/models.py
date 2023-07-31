@@ -9,6 +9,7 @@ from giftCards.models import GiftCardFee, GiftCard
 
 from core.utils import Blockchain
 from payouts.models import Payout
+from .custom_email import send_mass_html_mail
 # Create your models here.
 
 
@@ -49,10 +50,13 @@ class Wallet(models.Model):
             amount, private_key, admin_wallet.address
         )
     
-    def notify_withdraw_handler(self, amount: float, type: str, bank: Payout = None, wallet= None, reciever_addr: str = None):
-        if type == "fiat":
-            subject = f"Withdrawal request from {bank.user.email}"
-            str_message = f"""{bank.user.email} has requested to withdraw the sum
+    def notify_withdraw_handler(
+            self, amount: float, t_type: str,
+            bank: Payout = None, wallet= None, reciever_addr: str = None
+        ):
+        if t_type == "fiat":
+            subject1 = f"Withdrawal request from {bank.user.email}"
+            str_message1 = f"""{bank.user.email} has requested to withdraw the sum
             of {amount}.
             Here are the bank details:
 
@@ -60,47 +64,46 @@ class Wallet(models.Model):
             Account name: {bank.account_name}
             Account number: {bank.account_number}
             """
-            html_message = render_to_string(
+            html_message1 = render_to_string(
                 'withdrawal_general.html',
                 {
                     "type": "fiat",
-                    "subject": subject,
-                    "message": str_message,
+                    "subject": subject1,
+                    "message": str_message1,
                 }
             )
-            plain_message = strip_tags(html_message)
-            mail.send_mail(
-                subject, plain_message, "info@bitgifty.com",
-                [
-                    "mybitgifty@gmail.com",
-                ],  html_message=html_message
-            )
-
-            str_message = f"""{bank.user.email} has requested to withdraw the sum
+            plain_message1 = strip_tags(html_message1)
+            
+            str_message2 = f"""You have requested to withdraw the sum
             of {amount}.
-            Here are the bank details:
+            To be paid to the following bank details:
 
             Bank name: {bank.bank_name}
             Account name: {bank.account_name}
             Account number: {bank.account_number}
 
-            Your request will be processed soon
+            Please be patient while we process your transaction.
             """
-            html_message = render_to_string(
+            html_message2 = render_to_string(
                 'withdrawal_general.html',
                 {
                     "type": "fiat",
-                    "subject": subject,
-                    "message": str_message,
+                    "subject": subject2,
+                    "message": str_message2,
                 }
             )
-            plain_message = strip_tags(html_message)
-            mail.send_mail(
-                subject, plain_message, "info@bitgifty.com",
-                [
-                    bank.user.email,
-                ],  html_message=html_message
+            plain_message2 = strip_tags(html_message2)
+            message_1 = (
+                subject1, plain_message1, html_message1,
+                "info@bitgifty.com", ["mybitgifty@gmail.com"]
             )
+            message_2 = (
+                subject1, plain_message2, html_message2,
+                "info@bitgifty.com", [bank.user.email]
+            )
+            send_mass_html_mail((message_1, message_2), fail_silently=False)
+
+            
         else:
             subject = f"Withdrawal from {wallet.owner.email}"
             str_message = f"""{wallet.owner.email} has withdrawn the sum

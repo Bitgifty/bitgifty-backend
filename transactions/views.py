@@ -98,7 +98,11 @@ class WithdrawAPIView(generics.GenericAPIView):
                         status="pending",
                     )
                     try:
-                        wallet.notify_withdraw_handler(float(amount), "fiat", bank)
+                        wallet.notify_withdraw_handler(
+                            amount=float(amount),
+                            t_type="fiat",
+                            bank=bank
+                        )
                     except Exception as exception:
                         raise ValidationError(exception)
 
@@ -112,7 +116,7 @@ class WithdrawAPIView(generics.GenericAPIView):
                 mnemonic = client.decrypt_crendentails(private_key)
                 try:
                     response = client.send_token(receiver_address, network.lower(), str(amount), mnemonic, wallet.address)
-                    wallet.notify_withdraw_handler(amount=float(amount), type="crypto", wallet=wallet, reciever_addr=receiver_address)
+                    wallet.notify_withdraw_handler(amount=float(amount), t_type="crypto", wallet=wallet, reciever_addr=receiver_address)
                 except Exception as exception:
                     raise ValidationError(str(exception))
                 if response.get("txId"):
