@@ -98,7 +98,7 @@ class Wallet(models.Model):
             mail.send_mail(
                 subject, plain_message, "info@bitgifty.com",
                 [
-                    wallet.owner.email,
+                    bank.user.email,
                 ],  html_message=html_message
             )
         else:
