@@ -358,5 +358,3 @@ class Blockchain(object):
         except Exception as exception:
             raise ValueError(exception)
         return "success"
-
-

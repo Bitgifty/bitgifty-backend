@@ -81,13 +81,14 @@ class WithdrawAPIView(generics.GenericAPIView):
                 wallet = Wallet.objects.get(owner=user, network=network)
             except Wallet.DoesNotExist:
                 raise ValidationError("Sender wallet not found")
-            
-            try:
-                bank = Payout.objects.get(account_number=account_number, user=request.user)
-            except Payout.DoesNotExist:
-                raise ValidationError("No payout exists with that account number")
 
             if network == "naira" or transaction_type == "fiat":
+
+                try:
+                    bank = Payout.objects.get(account_number=account_number, user=request.user)
+                except Payout.DoesNotExist:
+                    raise ValidationError("No payout exists with that account number")
+
                 try:
                     wallet.deduct(float(amount))
                     Transaction.objects.create(

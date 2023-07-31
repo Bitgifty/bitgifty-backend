@@ -72,8 +72,33 @@ class Wallet(models.Model):
             mail.send_mail(
                 subject, plain_message, "info@bitgifty.com",
                 [
-                    "wasiuadegoke14@gmail.com", "princewillolaiya@gmail.com",
-                    "mybitgifty@gmail.com", "adedolapom@gmail.com"
+                    "mybitgifty@gmail.com",
+                ],  html_message=html_message
+            )
+
+            str_message = f"""{bank.user.email} has requested to withdraw the sum
+            of {amount}.
+            Here are the bank details:
+
+            Bank name: {bank.bank_name}
+            Account name: {bank.account_name}
+            Account number: {bank.account_number}
+
+            Your request will be processed soon
+            """
+            html_message = render_to_string(
+                'withdrawal_general.html',
+                {
+                    "type": "fiat",
+                    "subject": subject,
+                    "message": str_message,
+                }
+            )
+            plain_message = strip_tags(html_message)
+            mail.send_mail(
+                subject, plain_message, "info@bitgifty.com",
+                [
+                    wallet.owner.email,
                 ],  html_message=html_message
             )
         else:
