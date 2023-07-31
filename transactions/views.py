@@ -90,7 +90,6 @@ class WithdrawAPIView(generics.GenericAPIView):
                     raise ValidationError("No payout exists with that account number")
 
                 try:
-                    wallet.deduct(float(amount))
                     Transaction.objects.create(
                         user=user,
                         amount=amount,
@@ -98,7 +97,12 @@ class WithdrawAPIView(generics.GenericAPIView):
                         account_name=bank.account_name,
                         status="pending",
                     )
-                    wallet.notify_withdraw_handler(float(amount), "fiat", bank)
+                    try:
+                        wallet.notify_withdraw_handler(float(amount), "fiat", bank)
+                    except Exception as exception:
+                        raise ValidationError(exception)
+
+                    wallet.deduct(float(amount))
 
                     return Response("success")
                 except Exception as exception:
