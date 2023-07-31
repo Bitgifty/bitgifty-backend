@@ -88,7 +88,7 @@ class Wallet(models.Model):
                 'withdrawal_general.html',
                 {
                     "type": "fiat",
-                    "subject": subject2,
+                    "subject": subject1,
                     "message": str_message2,
                 }
             )
