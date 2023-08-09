@@ -61,11 +61,12 @@ INSTALLED_APPS = [
     'swap.apps.SwapConfig',
     'payouts.apps.PayoutsConfig',
     'transactions.apps.TransactionsConfig',
+    'utilities.apps.UtilitiesConfig',
     'wallets.apps.WalletsConfig',
 
     'corsheaders',
 
-    "drf_standardized_errors",
+    'drf_standardized_errors',
     'rest_framework',
     # 'rest_framework.authtoken',
     'knox',

@@ -3,6 +3,7 @@ import json
 import math
 import requests
 import secrets
+import time
 
 import qrcode
 
@@ -37,10 +38,15 @@ def get_naira_price():
     return float(result)
 
 class Blockchain(object):
-    def __init__(self, key: str, bin_key: str = None, bin_secret: str=None) -> None:
+    def __init__(
+            self, key: str, bin_key: str = None,
+            bin_secret: str=None,
+            utility_url="https://arktivesub.com/api/data"
+        ) -> None:
         self.key = key
         self.bin_key = bin_key
         self.bin_secret = bin_secret
+        self.utility_url = utility_url
 
     def init_binance(self) -> Spot:
         """
@@ -355,6 +361,327 @@ class Blockchain(object):
             swap_from.deduct(swap_amount)
             amount = math.floor(float(factor) * float(usdt_price) * float(swap_amount))
             swap_to.deposit(float(amount))
+        except Exception as exception:
+            raise ValueError(exception)
+        return "success"
+
+    def get_data_plans(self):
+        plans = {
+            "MTN": {
+                "1.0GB": {
+                    "plan_name": "1.0GB",
+                    "plan_id": 1,
+                    "plan_type": "SME",
+                    "amount": 220.00,
+                    "validity": "1 month",
+                },
+                "3.0GB": {
+                    "plan_name": "3.0GB",
+                    "plan_id": 2,
+                    "plan_type": "SME",
+                    "amount": 660.00,
+                    "validity": "1 month",
+                },
+                "2.0GB": {
+                    "plan_name": "2.0GB",
+                    "plan_id": 3,
+                    "plan_type": "SME",
+                    "amount": 440.00,
+                    "validity": "1 month",
+                },
+                "5.0GB": {
+                    "plan_name": "5.0GB",
+                    "plan_id": 4,
+                    "plan_type": "SME",
+                    "amount": 1100.00,
+                    "validity": "1 month",
+                },
+                "10.0GB": {
+                    "plan_name": "10.0GB",
+                    "plan_id": 5,
+                    "plan_type": "SME",
+                    "amount": 2200.00,
+                    "validity": "1 month",
+                },
+                "500MB": {
+                    "plan_name": "500MB",
+                    "plan_id": 6,
+                    "plan_type": "SME",
+                    "amount": 115,
+                    "validity": "1 month",
+                },
+            },
+            "AIRTEL": {
+                "1.0GB": {
+                    "plan_name": "100MB",
+                    "plan_id": 13,
+                    "plan_type": "COOPERATE GIFTING",
+                    "amount": 100.00,
+                    "validity": "1 Week",
+                },
+                "1.0GB": {
+                    "plan_name": "1.0GB",
+                    "plan_id": 14,
+                    "plan_type": "COOPERATE GIFTING",
+                    "amount": 249.00,
+                    "validity": "1 month",
+                },
+                "2.0GB": {
+                    "plan_name": "2.0GB",
+                    "plan_id": 15,
+                    "plan_type": "COOPERATE GIFTING",
+                    "amount": 498.00,
+                    "validity": "1 month",
+                },
+            }
+        }
+        return plans
+
+    def get_data_plan(self, network: str, plan: str) -> float:
+        plans = {
+            "MTN": {
+                "1.0GB": {
+                    "plan_name": "1.0GB",
+                    "plan_id": 1,
+                    "plan_type": "SME",
+                    "amount": 220.00,
+                    "validity": "1 month",
+                },
+                "3.0GB": {
+                    "plan_name": "3.0GB",
+                    "plan_id": 2,
+                    "plan_type": "SME",
+                    "amount": 660.00,
+                    "validity": "1 month",
+                },
+                "2.0GB": {
+                    "plan_name": "2.0GB",
+                    "plan_id": 3,
+                    "plan_type": "SME",
+                    "amount": 440.00,
+                    "validity": "1 month",
+                },
+                "5.0GB": {
+                    "plan_name": "5.0GB",
+                    "plan_id": 4,
+                    "plan_type": "SME",
+                    "amount": 1100.00,
+                    "validity": "1 month",
+                },
+                "10.0GB": {
+                    "plan_name": "10.0GB",
+                    "plan_id": 5,
+                    "plan_type": "SME",
+                    "amount": 2200.00,
+                    "validity": "1 month",
+                },
+                "500MB": {
+                    "plan_name": "500MB",
+                    "plan_id": 6,
+                    "plan_type": "SME",
+                    "amount": 115,
+                    "validity": "1 month",
+                },
+            },
+            "AIRTEL": {
+                "1.0GB": {
+                    "plan_name": "100MB",
+                    "plan_id": 13,
+                    "plan_type": "COOPERATE GIFTING",
+                    "amount": 100.00,
+                    "validity": "1 Week",
+                },
+                "1.0GB": {
+                    "plan_name": "1.0GB",
+                    "plan_id": 14,
+                    "plan_type": "COOPERATE GIFTING",
+                    "amount": 249.00,
+                    "validity": "1 month",
+                },
+                "2.0GB": {
+                    "plan_name": "2.0GB",
+                    "plan_id": 15,
+                    "plan_type": "COOPERATE GIFTING",
+                    "amount": 498.00,
+                    "validity": "1 month",
+                },
+            }
+        }
+        return plans[network.upper()][plan.upper()]["plan_id"]
+
+    def purchase_data(self, network: str, plan: str, phone: int):
+        network_id = {
+            "MTN": 1,
+            "AIRTEL": 2,
+            "GLO": 3,
+            "9MOBILE": 4
+        }
+
+        key = os.getenv("ARKTIVESUB_KEY")
+        
+        headers = {
+            "Authorization": f"Token {key}",
+            "Content-Type": "application/json"
+        }
+
+        data_plan = self.get_data_plan(network, plan)
+        request_id = f"Data_{data_plan}_{time.time()}"
+        
+        data = {
+            "network": network_id[network.upper()],
+            "phone": phone,
+            "data_plan": data_plan,
+            "bypass": False,
+            "request-id": request_id
+        }
+
+        req = requests.post(
+            url=self.utility_url,
+            json=data,
+            headers=headers
+        )
+        response = req.json()
+        if response["status"] == "fail":
+            raise ValueError(response["message"])
+        return 
+    
+    def purchase_airtime(self, network: str, phone: str, amount: int) -> dict:
+        network_id = {
+            "MTN": 1,
+            "AIRTEL": 2,
+            "GLO": 3,
+            "9MOBILE": 4
+        }
+
+        key = os.getenv("ARKTIVESUB_KEY")
+        
+        headers = {
+            "Authorization": f"Token {key}",
+            "Content-Type": "application/json"
+        }
+
+        request_id = f"Airtime_{network}_{amount}_{time.time()}"
+
+        data = {
+            "network": network_id[network.upper()],
+            "phone": phone,
+            "plan_type": "VTU",
+            "bypass": False,
+            "amount": amount,
+            "request-id": request_id
+        }
+
+        req = requests.post(
+            url="https://arktivesub.com/api/topup/",
+            headers=headers,
+            json=data,
+        )
+
+        response = req.json()
+
+        return response
+    
+    def purchase_electricity(
+            self, disco: str, meter_type: str,
+            meter_number: str, amount: int,
+        ):
+
+        disco_id = {
+            "Ikeja": 1,
+            "Eko": 2,
+            "Kano": 3,
+            "Port Harcourt": 4,
+            "Joss": 5,
+            "Ibadan": 6,
+            "Kaduna": 7,
+            "Abuja": 8
+        }
+
+        key = os.getenv("ARKTIVESUB_KEY")
+        
+        headers = {
+            "Authorization": f"Token {key}",
+            "Content-Type": "application/json"
+        }
+
+        request_id = f"Bill_{disco.title()}_{amount}_{time.time()}"
+
+        data = {
+            "disco": disco_id[disco.title()],
+            "meter_type": meter_type,
+            "meter_number": meter_number,
+            "amount": amount,
+            "bypass": False,
+            "request_id": request_id
+        }
+    
+        req = requests.post(
+            url="https://arktivesub.com/api/bill",
+            headers=headers,
+            json=data,
+        )
+        response = req.json()
+        return response
+
+    def purchase_cable(self, cable: int, iuc: str, plan: int) -> dict:
+        
+        url = "https://arktivesub.com/api/cable"
+
+        request_id = f"Cable_{iuc}_{time.time()}"
+
+        data = {
+            "cable": cable,
+            "iuc": iuc,
+            "cable_plan": plan,
+            "bypass": False,
+            "request_id": request_id
+        }
+        
+        key = os.getenv("ARKTIVESUB_KEY")
+        
+        headers = {
+            "Authorization": f"Token {key}",
+            "Content-Type": "application/json"
+        }
+    
+        req = requests.post(
+            url=url,
+            json=data,
+            headers=headers
+        )
+
+        response = req.json()
+
+        return response
+
+    def buy_data(self, wallet, amount, network, phone, plan):
+        try:
+            wallet.deduct(amount)
+            self.purchase_data(network, plan, phone)
+        except Exception as exception:
+            raise ValueError(exception)
+        return "success"
+
+    def buy_airtime(self, wallet, network, phone, amount) -> str:
+        try:
+            wallet.deduct(amount)
+            self.purchase_airtime(network, phone, amount)
+        except Exception as exception:
+            raise ValueError(exception)
+        return "success"
+
+    def buy_electricity(self, wallet, disco, meter_type, meter_number, amount) -> str:
+        try:
+            wallet.deduct(amount)
+            self.purchase_electricity(disco, meter_type, meter_number, amount)
+        except Exception as exception:
+            raise ValueError(exception)
+        return "success"
+
+    def buy_cable(self, wallet, cable, iuc, plan, amount) -> str:
+        try:
+            wallet.deduct(amount)
+            self.purchase_cable(cable, iuc, plan)
         except Exception as exception:
             raise ValueError(exception)
         return "success"
