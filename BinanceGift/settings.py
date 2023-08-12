@@ -65,7 +65,7 @@ INSTALLED_APPS = [
     'wallets.apps.WalletsConfig',
 
     'corsheaders',
-
+    'django_filters',
     'drf_standardized_errors',
     'rest_framework',
     # 'rest_framework.authtoken',
@@ -218,6 +218,8 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ],
+
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
         # new

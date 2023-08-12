@@ -369,6 +369,7 @@ class Blockchain(object):
         plans = {
             "MTN": {
                 "1.0GB": {
+                    "network_id": 1,
                     "plan_name": "1.0GB",
                     "plan_id": 1,
                     "plan_type": "SME",
@@ -376,6 +377,7 @@ class Blockchain(object):
                     "validity": "1 month",
                 },
                 "3.0GB": {
+                    "network_id": 1,
                     "plan_name": "3.0GB",
                     "plan_id": 2,
                     "plan_type": "SME",
@@ -383,6 +385,7 @@ class Blockchain(object):
                     "validity": "1 month",
                 },
                 "2.0GB": {
+                    "network_id": 1,
                     "plan_name": "2.0GB",
                     "plan_id": 3,
                     "plan_type": "SME",
@@ -390,6 +393,7 @@ class Blockchain(object):
                     "validity": "1 month",
                 },
                 "5.0GB": {
+                    "network_id": 1,
                     "plan_name": "5.0GB",
                     "plan_id": 4,
                     "plan_type": "SME",
@@ -397,6 +401,7 @@ class Blockchain(object):
                     "validity": "1 month",
                 },
                 "10.0GB": {
+                    "network_id": 1,
                     "plan_name": "10.0GB",
                     "plan_id": 5,
                     "plan_type": "SME",
@@ -404,6 +409,7 @@ class Blockchain(object):
                     "validity": "1 month",
                 },
                 "500MB": {
+                    "network_id": 1,
                     "plan_name": "500MB",
                     "plan_id": 6,
                     "plan_type": "SME",
@@ -413,13 +419,15 @@ class Blockchain(object):
             },
             "AIRTEL": {
                 "1.0GB": {
+                    "network_id": 2,
                     "plan_name": "100MB",
                     "plan_id": 13,
                     "plan_type": "COOPERATE GIFTING",
                     "amount": 100.00,
-                    "validity": "1 Week",
+                    "validity": "1 week",
                 },
                 "1.0GB": {
+                    "network_id": 2,
                     "plan_name": "1.0GB",
                     "plan_id": 14,
                     "plan_type": "COOPERATE GIFTING",
@@ -427,13 +435,106 @@ class Blockchain(object):
                     "validity": "1 month",
                 },
                 "2.0GB": {
+                    "network_id": 2,
                     "plan_name": "2.0GB",
                     "plan_id": 15,
                     "plan_type": "COOPERATE GIFTING",
                     "amount": 498.00,
                     "validity": "1 month",
                 },
-            }
+                "5.0GB": {
+                    "network_id": 2,
+                    "plan_name": "5.0GB",
+                    "plan_id": 14,
+                    "plan_type": "COOPERATE GIFTING",
+                    "amount": 1245.00,
+                    "validity": "1 month",
+                },
+            },
+            "GLO": {
+                "1.3GB": {
+                    "network_id": 3,
+                    "plan_name": "1.3GB",
+                    "plan_id": 19,
+                    "plan_type": "GIFTING",
+                    "amount": 465.00,
+                    "validity": "14 days",
+                },
+                "2.9GB": {
+                    "network_id": 3,
+                    "plan_name": "2.9GB",
+                    "plan_id": 20,
+                    "plan_type": "GIFTING",
+                    "amount": 930.00,
+                    "validity": "1 month",
+                },
+                "4.1GB": {
+                    "network_id": 3,
+                    "plan_name": "4.1GB",
+                    "plan_id": 22,
+                    "plan_type": "GIFTING",
+                    "amount": 1450.00,
+                    "validity": "1 month",
+                },
+                "5.8GB": {
+                    "network_id": 3,
+                    "plan_name": "5.8GB",
+                    "plan_id": 21,
+                    "plan_type": "GIFTING",
+                    "amount": 1850.00,
+                    "validity": "1 month",
+                },
+            },
+            "9MOBILE": {
+                "250MB": {
+                    "network_id": 4,
+                    "plan_name": "250MB",
+                    "plan_id": 23,
+                    "plan_type": "GIFTING",
+                    "amount": 230.00,
+                    "validity": "7 days",
+                },
+                "500MB": {
+                    "network_id": 4,
+                    "plan_name": "500MB",
+                    "plan_id": 24,
+                    "plan_type": "GIFTING",
+                    "amount": 450.00,
+                    "validity": "1 month",
+                },
+                "1.5GB": {
+                    "network_id": 4,
+                    "plan_name": "1.5GB",
+                    "plan_id": 25,
+                    "plan_type": "GIFTING",
+                    "amount": 900.00,
+                    "validity": "1 month",
+                },
+                "2GB": {
+                    "network_id": 4,
+                    "plan_name": "2GB",
+                    "plan_id": 26,
+                    "plan_type": "GIFTING",
+                    "amount": 1070.00,
+                    "validity": "1 month",
+                },
+                "3GB": {
+                    "network_id": 4,
+                    "plan_name": "3GB",
+                    "plan_id": 27,
+                    "plan_type": "GIFTING",
+                    "amount": 1310.00,
+                    "validity": "1 month",
+                },
+                "4.5GB": {
+                    "network_id": 4,
+                    "plan_name": "4.5GB",
+                    "plan_id": 30,
+                    "plan_type": "GIFTING",
+                    "amount": 1750.00,
+                    "validity": "1 month",
+                },
+            }   
         }
         return plans
 
@@ -441,6 +542,7 @@ class Blockchain(object):
         plans = {
             "MTN": {
                 "1.0GB": {
+                    "network_id": 1,
                     "plan_name": "1.0GB",
                     "plan_id": 1,
                     "plan_type": "SME",
@@ -448,6 +550,7 @@ class Blockchain(object):
                     "validity": "1 month",
                 },
                 "3.0GB": {
+                    "network_id": 1,
                     "plan_name": "3.0GB",
                     "plan_id": 2,
                     "plan_type": "SME",
@@ -455,6 +558,7 @@ class Blockchain(object):
                     "validity": "1 month",
                 },
                 "2.0GB": {
+                    "network_id": 1,
                     "plan_name": "2.0GB",
                     "plan_id": 3,
                     "plan_type": "SME",
@@ -462,6 +566,7 @@ class Blockchain(object):
                     "validity": "1 month",
                 },
                 "5.0GB": {
+                    "network_id": 1,
                     "plan_name": "5.0GB",
                     "plan_id": 4,
                     "plan_type": "SME",
@@ -469,6 +574,7 @@ class Blockchain(object):
                     "validity": "1 month",
                 },
                 "10.0GB": {
+                    "network_id": 1,
                     "plan_name": "10.0GB",
                     "plan_id": 5,
                     "plan_type": "SME",
@@ -476,6 +582,7 @@ class Blockchain(object):
                     "validity": "1 month",
                 },
                 "500MB": {
+                    "network_id": 1,
                     "plan_name": "500MB",
                     "plan_id": 6,
                     "plan_type": "SME",
@@ -485,13 +592,15 @@ class Blockchain(object):
             },
             "AIRTEL": {
                 "1.0GB": {
+                    "network_id": 2,
                     "plan_name": "100MB",
                     "plan_id": 13,
                     "plan_type": "COOPERATE GIFTING",
                     "amount": 100.00,
-                    "validity": "1 Week",
+                    "validity": "1 week",
                 },
                 "1.0GB": {
+                    "network_id": 2,
                     "plan_name": "1.0GB",
                     "plan_id": 14,
                     "plan_type": "COOPERATE GIFTING",
@@ -499,13 +608,106 @@ class Blockchain(object):
                     "validity": "1 month",
                 },
                 "2.0GB": {
+                    "network_id": 2,
                     "plan_name": "2.0GB",
                     "plan_id": 15,
                     "plan_type": "COOPERATE GIFTING",
                     "amount": 498.00,
                     "validity": "1 month",
                 },
-            }
+                "5.0GB": {
+                    "network_id": 2,
+                    "plan_name": "5.0GB",
+                    "plan_id": 14,
+                    "plan_type": "COOPERATE GIFTING",
+                    "amount": 1245.00,
+                    "validity": "1 month",
+                },
+            },
+            "GLO": {
+                "1.3GB": {
+                    "network_id": 3,
+                    "plan_name": "1.3GB",
+                    "plan_id": 19,
+                    "plan_type": "GIFTING",
+                    "amount": 465.00,
+                    "validity": "14 days",
+                },
+                "2.9GB": {
+                    "network_id": 3,
+                    "plan_name": "2.9GB",
+                    "plan_id": 20,
+                    "plan_type": "GIFTING",
+                    "amount": 930.00,
+                    "validity": "1 month",
+                },
+                "4.1GB": {
+                    "network_id": 3,
+                    "plan_name": "4.1GB",
+                    "plan_id": 22,
+                    "plan_type": "GIFTING",
+                    "amount": 1450.00,
+                    "validity": "1 month",
+                },
+                "5.8GB": {
+                    "network_id": 3,
+                    "plan_name": "5.8GB",
+                    "plan_id": 21,
+                    "plan_type": "GIFTING",
+                    "amount": 1850.00,
+                    "validity": "1 month",
+                },
+            },
+            "9MOBILE": {
+                "250MB": {
+                    "network_id": 4,
+                    "plan_name": "250MB",
+                    "plan_id": 23,
+                    "plan_type": "GIFTING",
+                    "amount": 230.00,
+                    "validity": "7 days",
+                },
+                "500MB": {
+                    "network_id": 4,
+                    "plan_name": "500MB",
+                    "plan_id": 24,
+                    "plan_type": "GIFTING",
+                    "amount": 450.00,
+                    "validity": "1 month",
+                },
+                "1.5GB": {
+                    "network_id": 4,
+                    "plan_name": "1.5GB",
+                    "plan_id": 25,
+                    "plan_type": "GIFTING",
+                    "amount": 900.00,
+                    "validity": "1 month",
+                },
+                "2GB": {
+                    "network_id": 4,
+                    "plan_name": "2GB",
+                    "plan_id": 26,
+                    "plan_type": "GIFTING",
+                    "amount": 1070.00,
+                    "validity": "1 month",
+                },
+                "3GB": {
+                    "network_id": 4,
+                    "plan_name": "3GB",
+                    "plan_id": 27,
+                    "plan_type": "GIFTING",
+                    "amount": 1310.00,
+                    "validity": "1 month",
+                },
+                "4.5GB": {
+                    "network_id": 4,
+                    "plan_name": "4.5GB",
+                    "plan_id": 30,
+                    "plan_type": "GIFTING",
+                    "amount": 1750.00,
+                    "validity": "1 month",
+                },
+            }   
         }
         return plans[network.upper()][plan.upper()]["plan_id"]
 
@@ -579,6 +781,11 @@ class Blockchain(object):
 
         response = req.json()
 
+        if not response.get("status"):
+            raise ValueError("error purchasing airtime")
+    
+        if response["status"] == "fail":
+            raise ValueError(response["message"])
         return response
     
     def purchase_electricity(
@@ -654,34 +861,34 @@ class Blockchain(object):
 
         return response
 
-    def buy_data(self, wallet, amount, network, phone, plan):
+    def buy_data(self, wallet, amount, network, phone, plan, token_amount):
         try:
-            wallet.deduct(amount)
+            wallet.deduct(token_amount)
             self.purchase_data(network, plan, phone)
         except Exception as exception:
             raise ValueError(exception)
         return "success"
 
-    def buy_airtime(self, wallet, network, phone, amount) -> str:
+    def buy_airtime(self, wallet, network, phone, amount, token_amount) -> str:
         try:
-            wallet.deduct(amount)
             self.purchase_airtime(network, phone, amount)
+            wallet.deduct(token_amount)
         except Exception as exception:
             raise ValueError(exception)
         return "success"
 
-    def buy_electricity(self, wallet, disco, meter_type, meter_number, amount) -> str:
+    def buy_electricity(self, wallet, disco, meter_type, meter_number, amount, token_amount) -> str:
         try:
-            wallet.deduct(amount)
             self.purchase_electricity(disco, meter_type, meter_number, amount)
+            wallet.deduct(token_amount)
         except Exception as exception:
             raise ValueError(exception)
         return "success"
 
     def buy_cable(self, wallet, cable, iuc, plan, amount) -> str:
         try:
-            wallet.deduct(amount)
             self.purchase_cable(cable, iuc, plan)
+            wallet.deduct(amount)
         except Exception as exception:
             raise ValueError(exception)
         return "success"

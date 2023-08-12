@@ -2,6 +2,12 @@ from rest_framework import serializers
 from accounts.serializers import CustomUserDetailSerializer
 from .models import Wallet
 
+
+class WalletNormSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Wallet
+        fields = ("pk",)
+
 class WalletSerializer(serializers.ModelSerializer):
     owner = CustomUserDetailSerializer(read_only=True)
     class Meta:
