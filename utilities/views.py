@@ -97,24 +97,29 @@ class BuyElectricityAPIView(generics.ListCreateAPIView):
 class CableAPIView(generics.ListAPIView):
     serializer_class = serializers.CableSerializer
     queryset = models.Cable.objects.all()
+    filterset_fields = ['name',]
 
 
 class CablePlanAPIView(generics.ListAPIView):
     serializer_class = serializers.CablePlanSerializer
     queryset = models.CablePlan.objects.all()
+    filterset_fields = ['plan_name','cable__name']
 
 
 class NetworkAPIView(generics.ListAPIView):
     serializer_class = serializers.NetworkSerializer
     queryset = models.Network.objects.all()
+    filterset_fields = ['name',]
 
 
 class DataPlanAPIView(generics.ListAPIView):
     serializer_class = serializers.DataPlanSerializer
     queryset = models.DataPlan.objects.all()
+    filterset_fields = ["network__name", "plan_name"]
 
 
 class DiscoAPIView(generics.ListAPIView):
     serializer_class = serializers.DiscoSerializer
     queryset = models.Disco.objects.all()
+    filterset_fields = ['disco_name',]
 
