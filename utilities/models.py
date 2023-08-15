@@ -73,9 +73,10 @@ class DataPurchase(models.Model):
         client = Blockchain(key=os.getenv("TATUM_API_KEY"))
         wallet = Wallet.objects.get(owner=self.user, network__icontains=self.wallet_from)
         amount = self.data_plan.amount
+
         return client.buy_data(
-            wallet, amount, self.data_plan.network, self.phone,
-            self.token_amount
+            wallet, amount, self.data_plan.network.plan_id, self.phone,
+            self.data_plan.plan_id, self.token_amount
         )
 
     def save(self, *args, **kwargs):
@@ -133,7 +134,7 @@ class CablePurchase(models.Model):
         plan_id = self.cable_plan.plan_id
         
         return client.buy_cable(
-            wallet, self.cable_plan, self.iuc, plan_id, self.token_amount
+            wallet, self.cable_plan.cable.plan_id, self.iuc, plan_id, self.token_amount
         )
     
     def save(self, *args, **kwargs):
@@ -158,9 +159,8 @@ class ElectricityPurchase(models.Model):
     def purchase(self):
         client = Blockchain(key=os.getenv("TATUM_API_KEY"))
         wallet = Wallet.objects.get(owner=self.user, network__icontains=self.wallet_from)
-        
         return client.buy_electricity(
-            wallet, self.disco.disco_name, self.meter_type,
+            wallet, self.disco.plan_id, self.meter_type,
             self.meter_number, self.amount, self.token_amount
         )
 

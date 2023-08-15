@@ -709,7 +709,7 @@ class Blockchain(object):
                 },
             }   
         }
-        return plans[network.upper()][plan.upper()]["plan_id"]
+        return plans[network][plan]["plan_id"]
 
     def purchase_data(self, network: str, plan: str, phone: int):
         network_id = {
@@ -726,13 +726,12 @@ class Blockchain(object):
             "Content-Type": "application/json"
         }
 
-        data_plan = self.get_data_plan(network, plan)
-        request_id = f"Data_{data_plan}_{time.time()}"
+        request_id = f"Data_{plan}_{time.time()}"
         
         data = {
-            "network": network_id[network.upper()],
+            "network": network,
             "phone": phone,
-            "data_plan": data_plan,
+            "data_plan": plan,
             "bypass": False,
             "request-id": request_id
         }
@@ -793,17 +792,6 @@ class Blockchain(object):
             meter_number: str, amount: int,
         ):
 
-        disco_id = {
-            "Ikeja": 1,
-            "Eko": 2,
-            "Kano": 3,
-            "Port Harcourt": 4,
-            "Joss": 5,
-            "Ibadan": 6,
-            "Kaduna": 7,
-            "Abuja": 8
-        }
-
         key = os.getenv("ARKTIVESUB_KEY")
         
         headers = {
@@ -811,10 +799,10 @@ class Blockchain(object):
             "Content-Type": "application/json"
         }
 
-        request_id = f"Bill_{disco.title()}_{amount}_{time.time()}"
+        request_id = f"Bill_{disco}_{amount}_{time.time()}"
 
         data = {
-            "disco": disco_id[disco.title()],
+            "disco": disco,
             "meter_type": meter_type,
             "meter_number": meter_number,
             "amount": amount,

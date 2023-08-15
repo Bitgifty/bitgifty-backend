@@ -50,19 +50,29 @@ class BuyAirtimeSerializer(serializers.ModelSerializer):
 class BuyDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.DataPurchase
-        fields = "__all__"
+        fields = (
+            "token_amount", "wallet_from",
+            "phone", "data_plan",
+        )
         read_only_fields = ("user",)
 
 
 class BuyCableSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.CablePurchase
-        fields = "__all__"
+        fields = (
+            "token_amount", "cable_plan",
+            "iuc", "wallet_from",
+        )
         read_only_fields = ("user",)
 
 
 class BuyElectricitySerializer(serializers.ModelSerializer):
     class Meta:
         model = models.ElectricityPurchase
-        fields = "__all__"
+        fields = (
+            "token_amount", "amount", 
+            "meter_type", "meter_number",
+            "disco", "wallet_from",
+        )
         read_only_fields = ("user",)
