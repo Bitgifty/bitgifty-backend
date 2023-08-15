@@ -711,14 +711,7 @@ class Blockchain(object):
         }
         return plans[network][plan]["plan_id"]
 
-    def purchase_data(self, network: str, plan: str, phone: int):
-        network_id = {
-            "MTN": 1,
-            "AIRTEL": 2,
-            "GLO": 3,
-            "9MOBILE": 4
-        }
-
+    def purchase_data(self, network: str, plan: int, phone: int):
         key = os.getenv("ARKTIVESUB_KEY")
         
         headers = {
@@ -729,9 +722,9 @@ class Blockchain(object):
         request_id = f"Data_{plan}_{time.time()}"
         
         data = {
-            "network": network,
+            "network": str(network),
             "phone": phone,
-            "data_plan": plan,
+            "data_plan": str(plan),
             "bypass": False,
             "request-id": request_id
         }
@@ -744,7 +737,7 @@ class Blockchain(object):
         response = req.json()
         if response["status"] == "fail":
             raise ValueError(response["message"])
-        return 
+        return "success"
     
     def purchase_airtime(self, network: str, phone: str, amount: int) -> dict:
         network_id = {
@@ -851,8 +844,8 @@ class Blockchain(object):
 
     def buy_data(self, wallet, amount, network, phone, plan, token_amount):
         try:
-            wallet.deduct(token_amount)
             self.purchase_data(network, plan, phone)
+            wallet.deduct(token_amount)
         except Exception as exception:
             raise ValueError(exception)
         return "success"
