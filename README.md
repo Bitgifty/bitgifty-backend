@@ -37,3 +37,22 @@ fiat agents are notified by the `notify_withdraw_handler`
 which is found in the `models.py` of the `wallets` module.
 These functions are finally called in the `WithdrawAPIView`
 view of the `views.py` file of the `transactions` module.
+
+### Instructions for buying data ###
+
+Data depends on a function called `buy_data` in the `utils.py`
+file previously mentioned, it works by making an api request to
+our data provider "arktivesub", which is given the data plans from
+the available plans in our database and then the equivalent amount
+is gotten from the purchase method in the `utilities\models.py`
+file and then deducted using the previouslt mentioned `deduct`
+method.
+
+### Instructions for buying data ###
+
+Data depends on a function called `buy_airtime` in the `utils.py`
+file previously mentioned, it works by making an api request to
+our data provider "arktivesub" and then the equivalent amount is
+gotten from the purchase method in the `utilities\models.py`
+file and then deducted using the previouslt mentioned `deduct`
+method.
