@@ -41,18 +41,18 @@ view of the `views.py` file of the `transactions` module.
 ### Instructions for buying data ###
 
 Data depends on a function called `buy_data` in the `utils.py`
-file previously mentioned, it works by making an api request to
-our data provider "arktivesub", which is given the data plans from
-the available plans in our database and then the equivalent amount
-is gotten from the purchase method in the `utilities\models.py`
-file and then deducted using the previouslt mentioned `deduct`
-method.
+file which can be found in the `core` module.
+It works by making an api request to our data provider "arktivesub",
+which is given the data plans from the available plans in our database
+and then the equivalent amount is gotten from the purchase method in
+the `utilities\models.py` file and then deducted using the `deduct` module
+which is found in the `models.py` file of the wallets module.
 
 ### Instructions for buying data ###
 
-Data depends on a function called `buy_airtime` in the `utils.py`
-file previously mentioned, it works by making an api request to
-our data provider "arktivesub" and then the equivalent amount is
-gotten from the purchase method in the `utilities\models.py`
-file and then deducted using the previouslt mentioned `deduct`
-method.
+Data depends on a function called `buy_data` in the `utils.py`
+file which can be found in the `core` module.
+It works by making an api request to our airtime provider "arktivesub",
+and then the equivalent amount is gotten from the purchase method in
+the `utilities\models.py` file and then deducted using the `deduct` module
+which is found in the `models.py` file of the wallets module.
