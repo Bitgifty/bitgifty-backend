@@ -123,14 +123,14 @@ class AirtimePurchase(models.Model):
         
         return client.buy_airtime(
             wallet, self.network.name, self.phone, self.amount,
-            self.token_amount
+            token_amount
         )
 
     def save(self, *args, **kwargs):
         if self._state.adding:
             try:
                 if self.wallet_from == "naira":
-                    token_amount = self.data_plan.amount
+                    token_amount = self.amount
                 else:
                     usd_price = get_rate(self.wallet_from.lower())
                     coin = 1/usd_price
@@ -141,7 +141,8 @@ class AirtimePurchase(models.Model):
                     rate = round(naira * coin, 3)
 
                     token_amount = self.token_amount/rate
-            except Exception:
+            except Exception as exception:
+                print(exception)
                 raise ValueError("Error converting naira to crypto")
             self.purchase(token_amount)
             self.token_amount = token_amount
@@ -165,7 +166,7 @@ class CablePurchase(models.Model):
         plan_id = self.cable_plan.plan_id
         
         return client.buy_cable(
-            wallet, self.cable_plan.cable.plan_id, self.iuc, plan_id, self.token_amount
+            wallet, self.cable_plan.cable.plan_id, self.iuc, plan_id, token_amount
         )
     
     def save(self, *args, **kwargs):
@@ -203,12 +204,12 @@ class ElectricityPurchase(models.Model):
     def __str__(self):
         return self.user.email
     
-    def purchase(self, token):
+    def purchase(self, token_amount):
         client = Blockchain(key=os.getenv("TATUM_API_KEY"))
         wallet = Wallet.objects.get(owner=self.user, network__icontains=self.wallet_from)
         return client.buy_electricity(
             wallet, self.disco.plan_id, self.meter_type,
-            self.meter_number, self.amount, self.token_amount
+            self.meter_number, self.amount, token_amount
         )
 
     def save(self, *args, **kwargs):

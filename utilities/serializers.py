@@ -42,7 +42,7 @@ class BuyAirtimeSerializer(serializers.ModelSerializer):
         model = models.AirtimePurchase
         fields = (
             "network", "wallet_from", 
-            "phone", "amount", "token_amount"
+            "phone", "amount"
         )
         read_only_fields = ("user",)
 
