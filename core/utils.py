@@ -755,7 +755,7 @@ class Blockchain(object):
         }
 
         request_id = f"Airtime_{network}_{amount}_{time.time()}"
-
+        return
         data = {
             "network": network_id[network.upper()],
             "phone": phone,

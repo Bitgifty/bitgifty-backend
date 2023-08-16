@@ -1,4 +1,5 @@
 import os
+import math
 
 from django.db import models
 
@@ -88,15 +89,14 @@ class DataPurchase(models.Model):
                     token_amount = self.data_plan.amount
                 else:
                     usd_price = get_rate(self.wallet_from.lower())
-                    coin = 1/usd_price
+                    tron = 1/usd_price
 
                     naira_rate = get_naira_price()
                     naira = 1/naira_rate
 
-                    rate = round(naira * coin, 3)
-
-                    token_amount = self.token_amount/rate
-            except Exception as ex:
+                    rate = round(naira * tron, 3)
+                    token_amount = self.data_plan.amount*rate
+            except Exception:
                 raise ValueError("Error converting naira to crypto")
             self.purchase(token_amount)
             self.token_amount = token_amount
@@ -122,7 +122,7 @@ class AirtimePurchase(models.Model):
         wallet = Wallet.objects.get(owner=self.user, network__icontains=self.wallet_from)
         
         return client.buy_airtime(
-            wallet, self.network.name, self.phone, self.amount,
+            wallet, self.network.name, self.phone, int(self.amount),
             token_amount
         )
 
@@ -133,16 +133,14 @@ class AirtimePurchase(models.Model):
                     token_amount = self.amount
                 else:
                     usd_price = get_rate(self.wallet_from.lower())
-                    coin = 1/usd_price
+                    tron = 1/usd_price
 
                     naira_rate = get_naira_price()
                     naira = 1/naira_rate
 
-                    rate = round(naira * coin, 3)
-
-                    token_amount = self.token_amount/rate
-            except Exception as exception:
-                print(exception)
+                    rate = round(naira * tron, 3)
+                    token_amount = self.amount*rate
+            except Exception:
                 raise ValueError("Error converting naira to crypto")
             self.purchase(token_amount)
             self.token_amount = token_amount
@@ -173,17 +171,16 @@ class CablePurchase(models.Model):
         if self._state.adding:
             try:
                 if self.wallet_from == "naira":
-                    token_amount = self.data_plan.amount
+                    token_amount = self.cable_plan.amount
                 else:
                     usd_price = get_rate(self.wallet_from.lower())
-                    coin = 1/usd_price
+                    tron = 1/usd_price
 
                     naira_rate = get_naira_price()
                     naira = 1/naira_rate
 
-                    rate = round(naira * coin, 3)
-
-                    token_amount = self.token_amount/rate
+                    rate = round(naira * tron, 3)
+                    token_amount = self.cable_plan.amount * rate
             except Exception:
                 raise ValueError("Error converting naira to crypto")
             self.purchase(token_amount)
@@ -216,17 +213,17 @@ class ElectricityPurchase(models.Model):
         if self._state.adding:
             try:
                 if self.wallet_from == "naira":
-                    token_amount = self.data_plan.amount
+                    token_amount = self.amount
                 else:
                     usd_price = get_rate(self.wallet_from.lower())
-                    coin = 1/usd_price
+                    tron = 1/usd_price
 
                     naira_rate = get_naira_price()
                     naira = 1/naira_rate
 
-                    rate = round(naira * coin, 3)
+                    rate = round(naira * tron, 3)
 
-                    token_amount = self.token_amount/rate
+                    token_amount = self.amount*rate
             except Exception:
                 raise ValueError("Error converting naira to crypto")
             self.purchase(token_amount)
