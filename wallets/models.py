@@ -137,7 +137,9 @@ class Wallet(models.Model):
             return self.balance
     
         client = Blockchain(os.getenv("TATUM_API_KEY"))
-    
+        print("******amount", amount)
+        print("***type", type(amount))
+
         admin_wallet = Wallet.objects.get(owner__username="superman-houseboy", network=self.network.title())
         private_key = client.decrypt_crendentails(self.private_key)
         return client.send_token(

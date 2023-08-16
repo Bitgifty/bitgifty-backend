@@ -36,3 +36,13 @@ class SwapRateAPIView(views.APIView):
         except SwapTable.DoesNotExist:
             raise exceptions.ValidationError("Swap not supported")
         return response.Response(rate)
+
+
+class GetUSDTAPIView(views.APIView):
+    def get(self, request, using):
+        try:
+            usd_price = get_rate(using)
+        except SwapTable.DoesNotExist:
+            raise exceptions.ValidationError("Not found")
+        return response.Response(usd_price)
+        

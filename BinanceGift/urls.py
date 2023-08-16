@@ -63,6 +63,8 @@ urlpatterns = [
 
     path('swap/', include('swap.urls')),
 
+    path('utilities/', include('utilities.urls')),
+
     path('wallets/', include('wallets.urls')),
 
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
