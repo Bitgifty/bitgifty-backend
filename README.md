@@ -48,11 +48,29 @@ and then the equivalent amount is gotten from the purchase method in
 the `utilities\models.py` file and then deducted using the `deduct` module
 which is found in the `models.py` file of the wallets module.
 
-### Instructions for buying data ###
+### Instructions for buying airtime ###
 
-Data depends on a function called `buy_data` in the `utils.py`
+Data depends on a function called `buy_airtime` in the `utils.py`
 file which can be found in the `core` module.
 It works by making an api request to our airtime provider "arktivesub",
 and then the equivalent amount is gotten from the purchase method in
+the `utilities\models.py` file and then deducted using the `deduct` module
+which is found in the `models.py` file of the wallets module.
+
+### Instructions for buying electricity ###
+
+Data depends on a function called `buy_electricity` in the `utils.py`
+file which can be found in the `core` module.
+It works by making an api request to our bill provider "arktivesub",
+which is given the disco plans from the available plans in our database
+and the amount of electricity unit to be purchased then the equivalent amount is gotten from the purchase method in
+the `utilities\models.py` file and then deducted using the `deduct` module
+which is found in the `models.py` file of the wallets module.
+
+### Instructions for paying for cable ###
+
+Data depends on a function called `buy_cable` in the `utils.py`
+file which can be found in the `core` module.
+It works by making an api request to our cable provider "arktivesub", the cable network and plan is then gotten from the database and then the equivalent crypto amount is gotten from the purchase method in
 the `utilities\models.py` file and then deducted using the `deduct` module
 which is found in the `models.py` file of the wallets module.
