@@ -63,6 +63,10 @@ INSTALLED_APPS = [
     'transactions.apps.TransactionsConfig',
     'utilities.apps.UtilitiesConfig',
     'wallets.apps.WalletsConfig',
+    'core.apps.CoreConfig',
+    'dapp.apps.DappConfig',
+    'ev.apps.EvConfig',
+    'enterprise.apps.EnterpriseConfig',
 
     'corsheaders',
     'django_filters',
