@@ -9,6 +9,7 @@ from giftCards.models import GiftCardImage, GiftCardFee
 
 from core.utils import Blockchain
 from .background_refund import Refund
+from points.models import save_point
 
 
 # Create your models here.
@@ -680,3 +681,15 @@ class RedeemStellar(models.Model):
         except Exception as exception:
             raise ValueError(exception)
         return super(RedeemStellar, self).save(*args, **kwargs)
+
+
+class Game(models.Model):
+    name = models.CharField(max_length=250)
+    wallet_address = models.CharField(max_length=250)
+    score = models.FloatField(default=0.0)
+
+    def save(self, *args, **kwargs):
+        if self._state.adding:
+            points = self.score/20
+            save_point(self.wallet_address, points)
+        return super(Game, self).save(*args, **kwargs)
