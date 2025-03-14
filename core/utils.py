@@ -873,3 +873,81 @@ class Blockchain(object):
         except Exception as exception:
             raise ValueError(exception)
         return "success"
+
+
+class BitGiftyPointsSystem:
+    # Constants for point calculations
+    POINTS_PER_USD = 1 / 0.006  # 166.67 points per USD
+    POINTS_TO_USD_RATE = 100 / 0.03  # 100 points = 0.03 USD
+    MINIMUM_REDEEM_POINTS = 200
+    MINIMUM_REDEEM_USD = 0.06
+    TRANSACTION_POINTS_PERCENTAGE = 0.05  # 5% of transaction value in points
+
+    @classmethod
+    def calculate_points_earned(cls, amount):
+        """
+        Calculate points earned based on transaction amount.
+        
+        :param amount: Transaction amount in USD
+        :return: Number of points earned
+        """
+        return round(amount * cls.POINTS_PER_USD, 2)
+
+    @classmethod
+    def calculate_transaction_points(cls, amount):
+        """
+        Calculate points earned as 5% of transaction value.
+        
+        :param amount: Transaction amount in USD
+        :return: Number of points earned from transaction
+        """
+        return round(amount * cls.TRANSACTION_POINTS_PERCENTAGE * cls.POINTS_PER_USD, 2)
+
+    @classmethod
+    def can_redeem_points(cls, total_points):
+        """
+        Check if points can be redeemed.
+        
+        :param total_points: Total accumulated points
+        :return: Boolean indicating if points can be redeemed
+        """
+        return total_points >= cls.MINIMUM_REDEEM_POINTS
+
+    @classmethod
+    def convert_points_to_usd(cls, points):
+        """
+        Convert points to USD.
+        
+        :param points: Number of points to convert
+        :return: Equivalent USD value
+        """
+        return round(points / cls.POINTS_TO_USD_RATE, 2)
+
+    @classmethod
+    def convert_usd_to_points(cls, usd_amount):
+        """
+        Convert USD to points.
+        
+        :param usd_amount: Amount in USD to convert
+        :return: Equivalent number of points
+        """
+        return round(usd_amount * cls.POINTS_PER_USD, 2)
+
+    @classmethod
+    def redeem_points(cls, total_points):
+        """
+        Redeem points for airtime.
+        
+        :param total_points: Total accumulated points
+        :return: Tuple of (can_redeem, usd_value, remaining_points)
+        """
+        if not cls.can_redeem_points(total_points):
+            return False, 0, total_points
+        
+        # Calculate redeemable USD value
+        redeemable_usd = cls.convert_points_to_usd(cls.MINIMUM_REDEEM_POINTS)
+        
+        # Calculate remaining points
+        remaining_points = total_points - cls.MINIMUM_REDEEM_POINTS
+        
+        return True, redeemable_usd, remaining_points
